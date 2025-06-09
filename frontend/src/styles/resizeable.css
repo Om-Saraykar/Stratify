@@ -1,0 +1,69 @@
+/* styles/Resizable.css */
+
+.react-resizable {
+  position: relative;
+  display: inline-block;
+  /* Crucial for images */
+}
+
+/* This class is applied to the Resizable wrapper when the node is selected */
+.react-resizable.ProseMirror-selectednode {
+  outline: 3px solid #3b82f6;
+  /* Blue outline for selected images */
+  outline-offset: 2px;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(59, 130, 246, 0.5);
+  /* Blue handle */
+  border: 1px solid #3b82f6;
+  border-radius: 50%;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.react-resizable:hover .react-resizable-handle,
+.react-resizable.ProseMirror-selectednode .react-resizable-handle {
+  opacity: 1;
+}
+
+.react-resizable-handle-se {
+  bottom: -10px;
+  right: -10px;
+  cursor: se-resize;
+}
+
+.react-resizable-handle-sw {
+  bottom: -10px;
+  left: -10px;
+  cursor: sw-resize;
+}
+
+.react-resizable-handle-ne {
+  top: -10px;
+  right: -10px;
+  cursor: ne-resize;
+}
+
+.react-resizable-handle-nw {
+  top: -10px;
+  left: -10px;
+  cursor: nw-resize;
+}
+
+/* Image node view wrapper - centers the image */
+.image-node-view {
+  display: flex;
+  justify-content: center;
+  margin: 1em 0;
+}
+
+.image-node-view img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
