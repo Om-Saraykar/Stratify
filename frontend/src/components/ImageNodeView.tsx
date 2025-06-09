@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import { Resizable } from 'react-resizable';
 import 'react-resizable/css/styles.css'; // Don't forget to import the CSS for react-resizable
-
 import { Grip } from 'lucide-react'; // For the resize handle icon
 
 export const ImageNodeView = (props: any) => {
@@ -29,12 +28,12 @@ export const ImageNodeView = (props: any) => {
   }
 
 
-  const onResize = (event: any, { size }: any) => {
+  const onResize = (_event: any, { size }: any) => {
     setCurrentWidth(size.width);
     setCurrentHeight(size.height);
   };
 
-  const onResizeStop = (event: any, { size }: any) => {
+  const onResizeStop = (_event: any, { size }: any) => {
     const pos = getPos();
 
     if (pos === undefined) return; // Ensure position is valid
@@ -74,9 +73,8 @@ export const ImageNodeView = (props: any) => {
         <img
           alt={alt}
           src={src}
-          title={title}
-          // Apply currentWidth/currentHeight to the image itself for dynamic resizing
           style={{ width: currentWidth, height: currentHeight }}
+          title={title}
         />
       </Resizable>
       {/* NodeViewContent is important for allowing other content inside (though typically not for images) */}
