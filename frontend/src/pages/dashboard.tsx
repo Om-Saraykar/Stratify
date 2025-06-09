@@ -1,43 +1,18 @@
-/* eslint-disable prettier/prettier */
-import { useState, useRef, useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
-import DefaultLayout from "@/layouts/default";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
-
-export default function NoteEditor() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  // Auto-resize the textarea
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-      textareaRef.current.style.height =
-        textareaRef.current.scrollHeight + "px";
-    }
-  }, [content]);
-
+export default function DashboardLayout() {
   return (
-    <DefaultLayout>
-          <div className="max-w-2xl mx-auto mt-10 p-4 rounded-2xl shadow-lg border bg-white">
-              <input
-                  className="w-full text-2xl font-semibold outline-none border-none bg-transparent mb-4"
-                  placeholder="Untitled"
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-              />
-
-              <textarea
-                  ref={textareaRef}
-                  className="w-full text-base outline-none resize-none border-none bg-transparent"
-                  placeholder="Write something..."
-                  rows={1}
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-              />
-          </div>
-    </DefaultLayout>
+    <SidebarProvider>
+      <div className="flex w-full h-screen">
+        <AppSidebar />
+        <main className="flex-grow py-6 px-4 overflow-auto bg-gray-100">
+          <SidebarTrigger />
+          <Outlet />
+        </main>
+      </div>
+    </SidebarProvider>
   );
 }

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import React, { useState } from "react";
 import { Tabs, Tab, Input, Link, Button, Card, CardBody } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
@@ -32,7 +31,7 @@ export default function Login() {
       });
 
       login(res.data.token);
-      navigate("/profile");
+      navigate("/dashboard");
     } catch (err: any) {
       setErrorMsg(err.response?.data?.error || "Login failed");
     } finally {
@@ -52,7 +51,7 @@ export default function Login() {
       });
 
       login(res.data.token);
-      navigate("/profile");
+      navigate("/dashboard");
     } catch (err: any) {
       setErrorMsg(err.response?.data?.error || "Signup failed");
     } finally {
