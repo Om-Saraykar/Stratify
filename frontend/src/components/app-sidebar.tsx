@@ -48,11 +48,11 @@ export function AppSidebar() {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
-                      to={item.path}
                       className={({ isActive }) =>
                         `flex items-center w-full text-left ${isActive ? "text-primary font-semibold" : "text-muted-foreground"
                         }`
                       }
+                      to={item.path}
                     >
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.title}</span>
