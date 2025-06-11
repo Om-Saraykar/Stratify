@@ -6,7 +6,6 @@ import Placeholder from '@tiptap/extension-placeholder';
 import Highlight from '@tiptap/extension-highlight';
 import Subscript from '@tiptap/extension-subscript';
 import Superscript from '@tiptap/extension-superscript';
-import CodeBlock from '@tiptap/extension-code-block';
 import TextAlign from '@tiptap/extension-text-align';
 import Table from '@tiptap/extension-table';
 import TableRow from '@tiptap/extension-table-row';
@@ -395,7 +394,6 @@ const NoteEditor = () => {
       Link.configure({
         openOnClick: false,
       }),
-      CodeBlock.configure({}), // Ensure CodeBlock is correctly configured if not done via StarterKit
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
