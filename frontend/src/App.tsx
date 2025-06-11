@@ -8,6 +8,7 @@ import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
 import Login from "@/pages/login";
 import Profile from "@/pages/profile";
+import DemoEditor from "@/pages/DemoEditor";
 // Dashboard layout & child pages
 import DashboardLayout from "@/pages/dashboard"; // ← This is your layout with Sidebar & Outlet
 import NoteEditor from "@/pages/NoteEditor";
@@ -28,6 +29,7 @@ function App() {
       <Route element={<AboutPage />} path="/about" />
       <Route element={<Login />} path="/login" />
       <Route element={<Profile />} path="/profile" />
+      <Route element={<DemoEditor />} path="/editor" />
 
       {/* Dashboard layout with nested children */}
       <Route element={<DashboardLayout />} path="/dashboard">

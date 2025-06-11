@@ -1,0 +1,149 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+body {
+  --tt-toolbar-height: 44px;
+  --tt-theme-text: var(--tt-gray-light-900);
+
+  .dark & {
+    --tt-theme-text: var(--tt-gray-dark-900);
+  }
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  color: var(--tt-theme-text);
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  padding: 0;
+}
+
+html,
+body,
+#root,
+#app {
+  height: 100%;
+  background-color: var(--tt-bg-color);
+}
+
+body {
+  overflow: hidden;
+}
+
+.tiptap.ProseMirror {
+  font-family: "DM Sans", sans-serif;
+}
+
+.content-wrapper {
+  height: calc(100% - var(--tt-toolbar-height));
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    display: block;
+    width: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 4px;
+  }
+
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--tt-scrollbar-color) transparent;
+}
+
+.simple-editor-content {
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.simple-editor-content .tiptap.ProseMirror {
+  padding: 3rem 3rem;
+}
+
+@media screen and (max-width: 480px) {
+  .simple-editor-content .tiptap.ProseMirror {
+    padding: 1rem 1.5rem;
+  }
+}
+
+// text selection
+.simple-editor-content {
+  // Basic selection styles
+  &::selection {
+    background-color: #b3d4fc;
+    color: #000000;
+  }
+
+  // For older browsers (optional, but good for broader compatibility)
+  &::-moz-selection {
+    background-color: #b3d4fc;
+    color: #000000;
+  }
+}
+
+mark {
+  padding: 0 2px;
+  border-radius: 2px;
+} 
+mark[data-highlight-color="#fbbc04"] {
+  background-color: #fbbc04;
+}
+
+mark[data-highlight-color="#34a853"] {
+  background-color: #34a853;
+}
+
+mark[data-highlight-color="#ff6d01"] {
+  background-color: #ff6d01;
+}
+
+/* Add all highlight colors */
+/* Define highlight color variables */
+:root {
+  --tt-color-highlight-red: #f28b82;
+  --tt-color-highlight-orange: #fbbc04;
+  --tt-color-highlight-yellow: #fff475;
+  --tt-color-highlight-green: #ccff90;
+  --tt-color-highlight-teal: #a7ffeb;
+  --tt-color-highlight-blue: #aecbfa;
+  --tt-color-highlight-purple: #d7aefb;
+  --tt-color-highlight-pink: #fdcfe8;
+  --tt-color-highlight-brown: #e6c9a8;
+  --tt-color-highlight-gray: #e8eaed;
+}
+/* Dark Theme (override) */
+[data-theme="dark"],
+.dark {
+  --tt-color-highlight-red: #5c2b29;
+  --tt-color-highlight-orange: #614a19;
+  --tt-color-highlight-yellow: #635d19;
+  --tt-color-highlight-green: #345920;
+  --tt-color-highlight-teal: #1e5245;
+  --tt-color-highlight-blue: #2b4f81;
+  --tt-color-highlight-purple: #42275e;
+  --tt-color-highlight-pink: #632c4b;
+  --tt-color-highlight-brown: #4e342e;
+  --tt-color-highlight-gray: #3c4043;
+}
+
+/* Basic <mark> element styling */
+mark {
+  border-radius: 2px;
+  padding: 0 2px;
+  color: inherit;
+  /* Ensure text color is readable */
+  font-weight: 500;
+}
+
+/* Optional: Scoped highlight support (if needed) */
+.tiptap mark[data-color] {
+  background-color: var(--tt-color-highlight-yellow);
+  /* default fallback */
+}

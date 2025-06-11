@@ -1,8 +1,8 @@
-import React from 'react'
+import NoteEditor from "./EditorPage"
 
 const TodoList = () => {
   return (
-    <div>TodoList</div>
+    <NoteEditor />
   )
 }
 
