@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+
 import { Separator } from "@/components/tiptap-ui-primitive/separator"
 import "@/components/tiptap-ui-primitive/toolbar/toolbar.scss"
 
@@ -30,6 +31,7 @@ const useObserveVisibility = (
 ): void => {
   React.useEffect(() => {
     const element = ref.current
+
     if (!element) return
 
     let isMounted = true
@@ -62,6 +64,7 @@ const useToolbarKeyboardNav = (
 ): void => {
   React.useEffect(() => {
     const toolbar = toolbarRef.current
+
     if (!toolbar) return
 
     const getFocusableElements = () =>
@@ -90,6 +93,7 @@ const useToolbarKeyboardNav = (
 
     const handleKeyDown = (e: KeyboardEvent) => {
       const focusableElements = getFocusableElements()
+
       if (!focusableElements.length) return
 
       const currentElement = document.activeElement as HTMLElement
@@ -111,6 +115,7 @@ const useToolbarKeyboardNav = (
       }
 
       const action = keyActions[e.key]
+
       if (action) {
         action()
       }
@@ -118,6 +123,7 @@ const useToolbarKeyboardNav = (
 
     const handleFocus = (e: FocusEvent) => {
       const target = e.target as HTMLElement
+
       if (toolbar.contains(target)) {
         target.setAttribute("data-focus-visible", "true")
       }
@@ -125,6 +131,7 @@ const useToolbarKeyboardNav = (
 
     const handleBlur = (e: FocusEvent) => {
       const target = e.target as HTMLElement
+
       if (toolbar.contains(target)) {
         target.removeAttribute("data-focus-visible")
       }
@@ -135,6 +142,7 @@ const useToolbarKeyboardNav = (
     toolbar.addEventListener("blur", handleBlur, true)
 
     const focusableElements = getFocusableElements()
+
     focusableElements.forEach((element) => {
       element.addEventListener("focus", handleFocus)
       element.addEventListener("blur", handleBlur)
@@ -146,6 +154,7 @@ const useToolbarKeyboardNav = (
       toolbar.removeEventListener("blur", handleBlur, true)
 
       const focusableElements = getFocusableElements()
+
       focusableElements.forEach((element) => {
         element.removeEventListener("focus", handleFocus)
         element.removeEventListener("blur", handleBlur)
@@ -162,6 +171,7 @@ const useToolbarVisibility = (
 
   React.useEffect(() => {
     isMountedRef.current = true
+
     return () => {
       isMountedRef.current = false
     }
@@ -171,6 +181,7 @@ const useToolbarVisibility = (
     if (!isMountedRef.current) return
 
     const toolbar = ref.current
+
     if (!toolbar) return
 
     // Check if any group has visible children
@@ -179,6 +190,7 @@ const useToolbarVisibility = (
       if (child.getAttribute("role") === "group") {
         return child.children.length > 0
       }
+
       return false
     })
 
@@ -186,6 +198,7 @@ const useToolbarVisibility = (
   }, [ref])
 
   useObserveVisibility(ref, checkVisibility)
+
   return isVisible
 }
 
@@ -197,6 +210,7 @@ const useGroupVisibility = (
 
   React.useEffect(() => {
     isMountedRef.current = true
+
     return () => {
       isMountedRef.current = false
     }
@@ -206,10 +220,12 @@ const useGroupVisibility = (
     if (!isMountedRef.current) return
 
     const group = ref.current
+
     if (!group) return
 
     const hasVisibleChildren = Array.from(group.children).some((child) => {
       if (!(child instanceof HTMLElement)) return false
+
       return true
     })
 
@@ -217,6 +233,7 @@ const useGroupVisibility = (
   }, [ref])
 
   useObserveVisibility(ref, checkVisibility)
+
   return isVisible
 }
 
@@ -228,6 +245,7 @@ const useSeparatorVisibility = (
 
   React.useEffect(() => {
     isMountedRef.current = true
+
     return () => {
       isMountedRef.current = false
     }
@@ -237,6 +255,7 @@ const useSeparatorVisibility = (
     if (!isMountedRef.current) return
 
     const separator = ref.current
+
     if (!separator) return
 
     const prevSibling = separator.previousElementSibling as HTMLElement
@@ -244,6 +263,7 @@ const useSeparatorVisibility = (
 
     if (!prevSibling || !nextSibling) {
       setIsVisible(false)
+
       return
     }
 
@@ -258,6 +278,7 @@ const useSeparatorVisibility = (
   }, [ref])
 
   useObserveVisibility(ref, checkVisibility)
+
   return isVisible
 }
 
@@ -273,10 +294,10 @@ export const Toolbar = React.forwardRef<HTMLDivElement, ToolbarProps>(
     return (
       <div
         ref={mergeRefs([toolbarRef, ref])}
-        role="toolbar"
         aria-label="toolbar"
-        data-variant={variant}
         className={`tiptap-toolbar ${className || ""}`}
+        data-variant={variant}
+        role="toolbar"
         {...props}
       >
         {children}
@@ -297,8 +318,8 @@ export const ToolbarGroup = React.forwardRef<HTMLDivElement, BaseProps>(
     return (
       <div
         ref={mergeRefs([groupRef, ref])}
-        role="group"
         className={`tiptap-toolbar-group ${className || ""}`}
+        role="group"
         {...props}
       >
         {children}
@@ -319,8 +340,8 @@ export const ToolbarSeparator = React.forwardRef<HTMLDivElement, BaseProps>(
     return (
       <Separator
         ref={mergeRefs([separatorRef, ref])}
-        orientation="vertical"
         decorative
+        orientation="vertical"
         {...props}
       />
     )

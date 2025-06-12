@@ -27,23 +27,46 @@ body,
 }
 
 body {
+  /* Keep overflow: hidden here if you want to prevent scrolling on the body */
+  /* If you want the main app to scroll, remove this */
   overflow: hidden;
 }
 
 .tiptap.ProseMirror {
   font-family: "DM Sans", sans-serif;
+
+  /* Add padding at the top so text doesn't go under the sticky toolbar */
+  padding-top: var(--tt-toolbar-height);
+
+  /* On mobile, add bottom padding instead */
+  @media (max-width: 480px) {
+    padding-top: 0;
+    padding-bottom: calc(var(--tt-toolbar-height) + var(--tt-safe-area-bottom));
+  }
 }
 
 .content-wrapper {
   height: calc(100% - var(--tt-toolbar-height));
   overflow-y: auto;
 
+  /* --- HIDE SCROLLBAR START --- */
+  /* For Webkit browsers (Chrome, Safari, Edge, Opera) */
   &::-webkit-scrollbar {
-    display: block;
-    width: 0.5rem;
+    width: 0;
+    /* Make the scrollbar track zero width */
+    height: 0;
+    /* Also for horizontal scrollbars if they appear */
+    display: none;
+    /* Explicitly hide it if the above isn't enough */
   }
 
-  &::-webkit-scrollbar-track {
+  /* For Firefox */
+  scrollbar-width: none;
+  /* "none" hides the scrollbar entirely */
+  /* --- HIDE SCROLLBAR END --- */
+
+  /* Remove these if you're hiding the scrollbar completely */
+  /* &::-webkit-scrollbar-track {
     background: transparent;
   }
 
@@ -52,9 +75,7 @@ body {
     border-radius: 4px;
   }
 
-  /* Firefox scrollbar */
-  scrollbar-width: thin;
-  scrollbar-color: var(--tt-scrollbar-color) transparent;
+  scrollbar-color: var(--tt-scrollbar-color) transparent; */
 }
 
 .simple-editor-content {
@@ -64,7 +85,7 @@ body {
 }
 
 .simple-editor-content .tiptap.ProseMirror {
-  padding: 3rem 3rem;
+  // padding: 1rem 1rem;
 }
 
 @media screen and (max-width: 480px) {
@@ -75,6 +96,7 @@ body {
 
 // text selection
 .simple-editor-content {
+
   // Basic selection styles
   &::selection {
     background-color: #b3d4fc;
@@ -91,7 +113,8 @@ body {
 mark {
   padding: 0 2px;
   border-radius: 2px;
-} 
+}
+
 mark[data-highlight-color="#fbbc04"] {
   background-color: #fbbc04;
 }
@@ -118,6 +141,7 @@ mark[data-highlight-color="#ff6d01"] {
   --tt-color-highlight-brown: #e6c9a8;
   --tt-color-highlight-gray: #e8eaed;
 }
+
 /* Dark Theme (override) */
 [data-theme="dark"],
 .dark {
@@ -147,3 +171,4 @@ mark {
   background-color: var(--tt-color-highlight-yellow);
   /* default fallback */
 }
+

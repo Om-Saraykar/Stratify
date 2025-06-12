@@ -1,8 +1,6 @@
-import NoteEditor from "./EditorPage"
-
-const TodoList = () => {
+ const TodoList = () => {
   return (
-    <NoteEditor />
+    <div>TodoList</div>
   )
 }
 

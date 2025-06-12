@@ -166,19 +166,19 @@ const MobileToolbarContent = ({
   </>
 )
 
-export function   SimpleEditor() {
-  const isMobile = useMobile()
-  const windowSize = useWindowSize()
+export function SimpleEditor() {
+  const isMobile = useMobile();
+  const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
     "main" | "highlighter" | "link"
-  >("main")
-  const toolbarRef = React.useRef<HTMLDivElement>(null)
+  >("main");
+  const toolbarRef = React.useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        autocomplete: "off",
+        autocomplete: "on",
         autocorrect: "off",
         autocapitalize: "off",
         "aria-label": "Main content area, start typing to enter text.",
@@ -209,52 +209,66 @@ export function   SimpleEditor() {
       Link.configure({ openOnClick: false }),
     ],
     content: content,
-  })
+  });
 
   const bodyRect = useCursorVisibility({
     editor,
     overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
-  })
+  });
 
   React.useEffect(() => {
     if (!isMobile && mobileView !== "main") {
-      setMobileView("main")
+      setMobileView("main");
     }
-  }, [isMobile, mobileView])
+  }, [isMobile, mobileView]);
 
   return (
     <EditorContext.Provider value={{ editor }}>
-      <Toolbar
-        ref={toolbarRef}
-        style={
-          isMobile
-            ? {
+      {/* Outer container for the entire editor, including toolbar and content */}
+      {/* This will likely be a flex column to stack toolbar and content */}
+      <div className="flex flex-col h-full w-full relative"> {/* Added relative for potential absolute positioning of toolbar */}
+        {/* Toolbar: Fixed at the top, not scrollable */}
+        <Toolbar
+          ref={toolbarRef}
+          className="tiptap-toolbar-fixed" // Add a class for fixed positioning
+          style={
+            isMobile
+              ? {
+                // This complex calculation is probably for mobile keyboard,
+                // it keeps the toolbar above the keyboard.
+                // For desktop, it should just be fixed at the top.
                 bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`,
               }
-            : {}
-        }
-      >
-        {mobileView === "main" ? (
-          <MainToolbarContent
-            isMobile={isMobile}
-            onHighlighterClick={() => setMobileView("highlighter")}
-            onLinkClick={() => setMobileView("link")}
-          />
-        ) : (
-          <MobileToolbarContent
-            type={mobileView === "highlighter" ? "highlighter" : "link"}
-            onBack={() => setMobileView("main")}
-          />
-        )}
-      </Toolbar>
+              : {}
+          }
+        >
+          {mobileView === "main" ? (
+            <MainToolbarContent
+              isMobile={isMobile}
+              onHighlighterClick={() => setMobileView("highlighter")}
+              onLinkClick={() => setMobileView("link")}
+            />
+          ) : (
+            <MobileToolbarContent
+              type={mobileView === "highlighter" ? "highlighter" : "link"}
+              onBack={() => setMobileView("main")}
+            />
+          )}
+        </Toolbar>
 
-      <div className="content-wrapper">
-        <EditorContent
-          className="simple-editor-content"
-          editor={editor}
-          role="presentation"
-        />
+        {/* Editor Content Area: This is the scrollable part */}
+        {/* Use flex-1 to take up remaining height, and overflow-y-auto for scrolling */}
+        <div className="flex-1 overflow-y-auto min-h-0 relative z-0">
+          {/* Add padding here if needed, or within simple-editor-content */}
+          <div className="p-4"> {/* Added padding for content */}
+            <EditorContent
+              className="simple-editor-content"
+              editor={editor}
+              role="presentation"
+            />
+          </div>
+        </div>
       </div>
     </EditorContext.Provider>
-  )
+  );
 }

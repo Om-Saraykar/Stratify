@@ -1,5 +1,7 @@
 import { mergeAttributes, Node } from "@tiptap/react"
 import { ReactNodeViewRenderer } from "@tiptap/react"
+
+
 import { ImageUploadNode as ImageUploadNodeComponent } from "@/components/tiptap-node/image-upload-node/image-upload-node"
 
 export type UploadFunction = (
@@ -98,6 +100,8 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
   },
 
   addNodeView() {
+    // This line is correct *assuming* ImageUploadNodeComponent (from image-upload-node.tsx)
+    // is properly defined using forwardRef and ReactNodeViewProps.
     return ReactNodeViewRenderer(ImageUploadNodeComponent)
   },
 
@@ -105,12 +109,12 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
     return {
       setImageUploadNode:
         (options = {}) =>
-        ({ commands }) => {
-          return commands.insertContent({
-            type: this.name,
-            attrs: options,
-          })
-        },
+          ({ commands }) => {
+            return commands.insertContent({
+              type: this.name,
+              attrs: options,
+            })
+          },
     }
   },
 
@@ -129,15 +133,19 @@ export const ImageUploadNode = Node.create<ImageUploadNodeOptions>({
           editor.isActive("imageUpload")
         ) {
           const nodeEl = editor.view.nodeDOM(selection.$from.pos)
+
           if (nodeEl && nodeEl instanceof HTMLElement) {
             // Since NodeViewWrapper is wrapped with a div, we need to click the first child
             const firstChild = nodeEl.firstChild
+
             if (firstChild && firstChild instanceof HTMLElement) {
               firstChild.click()
+
               return true
             }
           }
         }
+
         return false
       },
     }

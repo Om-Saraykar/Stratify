@@ -1,84 +1,116 @@
-import { useState } from 'react';
+import { useState, forwardRef, useEffect, useRef } from 'react';
 import { NodeViewWrapper, NodeViewContent } from '@tiptap/react';
 import { Resizable } from 'react-resizable';
-import 'react-resizable/css/styles.css'; // Don't forget to import the CSS for react-resizable
-import { Grip } from 'lucide-react'; // For the resize handle icon
+import 'react-resizable/css/styles.css';
+import { Grip } from 'lucide-react';
 
-export const ImageNodeView = (props: any) => {
+// Define the types for your node attributes and the props your NodeView expects
+interface ImageNodeAttrs {
+  src: string;
+  alt?: string;
+  title?: string;
+  width?: string | number;
+  height?: string | number;
+}
+
+interface ImageNodeViewProps {
+  node: {
+    attrs: ImageNodeAttrs;
+  };
+  getPos: () => number | undefined;
+  editor: any; // Consider importing the actual Editor type from tiptap
+  selected: boolean;
+}
+
+export const ImageNodeView = forwardRef<HTMLDivElement, ImageNodeViewProps>((props, ref) => {
   const { node, getPos, editor, selected } = props;
   const { src, alt, title, width, height } = node.attrs;
 
-  // Use local state for current dimensions if node.attrs.width/height aren't reliable during resize
   const [currentWidth, setCurrentWidth] = useState<string | number>(width || '100%');
   const [currentHeight, setCurrentHeight] = useState<string | number>(height || 'auto');
 
-  // Parse width from attributes for Resizable component
-  // Ensure width is a number for Resizable, or fall back to a reasonable default
-  let initialResizableWidth = typeof width === 'string' && width.endsWith('px') ? parseInt(width) : undefined;
+  const imgRef = useRef<HTMLImageElement>(null);
 
-  if (!initialResizableWidth && typeof width === 'string' && width.endsWith('%')) {
-    // If it's a percentage, Resizable needs a pixel value.
-    // This is a rough estimation. A better way would be to get the actual rendered image width.
-    // For now, let's assume a default max width if percentage.
-    initialResizableWidth = editor.view.dom.clientWidth * 0.75; // 75% of editor width as a starting point
+  useEffect(() => {
+    setCurrentWidth(width || '100%');
+    setCurrentHeight(height || 'auto');
+  }, [width, height]);
+
+  let initialResizableWidth: number;
+
+  if (typeof width === 'string' && width.endsWith('px')) {
+    initialResizableWidth = parseInt(width);
+  } else if (typeof width === 'string' && width.endsWith('%')) {
+    initialResizableWidth = editor.view?.dom?.clientWidth ? editor.view.dom.clientWidth * (parseFloat(width) / 100) : 400;
+  } else if (typeof width === 'number') {
+    initialResizableWidth = width;
+  } else {
+    initialResizableWidth = editor.view?.dom?.clientWidth ? editor.view.dom.clientWidth * 0.75 : 400;
   }
-  // Fallback if no width attribute is set or if parsing fails
-  if (!initialResizableWidth || isNaN(initialResizableWidth) || initialResizableWidth === 0) {
-    initialResizableWidth = editor.view.dom.clientWidth * 0.75; // Default if nothing valid is provided
+
+  if (isNaN(initialResizableWidth) || initialResizableWidth <= 0) {
+    initialResizableWidth = 400;
   }
 
+  let initialResizableHeight: number;
 
-  const onResize = (_event: any, { size }: any) => {
+  if (typeof height === 'string' && height.endsWith('px')) {
+    initialResizableHeight = parseInt(height);
+  } else if (typeof height === 'number') {
+    initialResizableHeight = height;
+  } else {
+    initialResizableHeight = 0; // Let Resizable handle based on aspect ratio
+  }
+
+  const onResize = (_event: React.SyntheticEvent, { size }: { size: { width: number; height: number } }) => {
     setCurrentWidth(size.width);
     setCurrentHeight(size.height);
   };
 
-  const onResizeStop = (_event: any, { size }: any) => {
+  const onResizeStop = (_event: React.SyntheticEvent, { size }: { size: { width: number; height: number } }) => {
     const pos = getPos();
 
-    if (pos === undefined) return; // Ensure position is valid
+    if (pos === undefined || pos < 0) {
+      // eslint-disable-next-line no-console
+      console.warn('ImageNodeView: Could not get valid node position for update.');
 
-    // Update Tiptap node attributes after resizing stops
+      return;
+    }
+
     editor.chain().focus().setNodeSelection(pos).updateAttributes('image', {
-      width: `${size.width}px`, // Save as pixels for consistent re-rendering
+      width: `${size.width}px`,
       height: `${size.height}px`,
     }).run();
-
-    // Reset local state to match the saved node attributes
-    setCurrentWidth(`${size.width}px`);
-    setCurrentHeight(`${size.height}px`);
   };
 
   return (
-    <NodeViewWrapper className="image-node-view">
-      {/*
-        The Resizable component needs a numerical width and height.
-        We're converting from string (e.g., "100px", "50%") to number here.
-        If the image is initially "100%", Resizable will start at a calculated pixel width.
-        If `width` is undefined or auto, provide a fallback.
-      */}
+    <NodeViewWrapper ref={ref} className="image-node-view">
       <Resizable
-        className={selected ? 'ProseMirror-selectednode' : ''} // Apply Tiptap's selection style
+        className={selected ? 'ProseMirror-selectednode' : ''}
         handle={
           <div className="react-resizable-handle react-resizable-handle-se">
             <Grip className="w-3 h-3 text-white" />
           </div>
         }
-        height={parseInt(String(currentHeight).replace('px', '').replace('%', '')) || 0} // Resizable needs numeric height, 0 for auto
-        lockAspectRatio={true} // Maintain aspect ratio during resize
-        width={initialResizableWidth} // Use the parsed or default numeric width
+        height={initialResizableHeight}
+        lockAspectRatio={true}
+        width={initialResizableWidth}
         onResize={onResize}
         onResizeStop={onResizeStop}
       >
         <img
-          alt={alt}
+          ref={imgRef}
+          alt={alt || ''}
+          draggable="false"
           src={src}
           style={{ width: currentWidth, height: currentHeight }}
           title={title}
         />
       </Resizable>
-      {/* NodeViewContent is important for allowing other content inside (though typically not for images) */}
       <NodeViewContent className="content" />
     </NodeViewWrapper>
   );
-};
+});
+
+// Add the displayName property here
+ImageNodeView.displayName = 'ImageNodeView';
