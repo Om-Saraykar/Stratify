@@ -1,6 +1,8 @@
 import { Route, Routes, Navigate } from "react-router-dom";
 
 // Non-dashboard pages
+import TasksPage from "./tasks/page"
+
 import IndexPage from "@/pages/index";
 import Features from "@/pages/features";
 import PricingPage from "@/pages/pricing";
@@ -8,7 +10,6 @@ import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
 import Login from "@/pages/login";
 import Profile from "@/pages/profile";
-import DemoEditor from "@/pages/DemoEditor";
 // Dashboard layout & child pages
 import DashboardLayout from "@/pages/dashboard"; // ← This is your layout with Sidebar & Outlet
 import NoteEditor from "@/pages/NoteEditor";
@@ -29,7 +30,7 @@ function App() {
       <Route element={<AboutPage />} path="/about" />
       <Route element={<Login />} path="/login" />
       <Route element={<Profile />} path="/profile" />
-      <Route element={<DemoEditor />} path="/editor" />
+      <Route element={<TasksPage />} path="/testing" />
 
       {/* Dashboard layout with nested children */}
       <Route element={<DashboardLayout />} path="/dashboard">

@@ -1,6 +1,11 @@
+ import TasksPage from "@/tasks/page"
+
  const TodoList = () => {
   return (
-    <div>TodoList</div>
+      <div className="w-full px-4">
+        <TasksPage />
+      </div>
+
   )
 }
 
