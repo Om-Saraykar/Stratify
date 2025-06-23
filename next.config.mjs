@@ -1,14 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async redirects() {
-    return [
-      {
-        destination: '/editor',
-        permanent: false,
-        source: '/',
-      },
-    ];
-  },
+  // You can add other config options here
 };
 
 export default nextConfig;
