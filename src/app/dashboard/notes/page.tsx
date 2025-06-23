@@ -1,3 +1,5 @@
+import NotesPage  from "@/app/editor/page"
+
 export default function Page() {
-  return <div>Notes</div>;
-}
+  return <NotesPage />
+};

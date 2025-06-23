@@ -2,7 +2,7 @@ import { Toaster } from 'sonner';
 
 import { PlateEditor } from '@/components/editor/plate-editor';
 
-export default function Page() {
+export default function NotesPage() {
   return (
     <div className="h-screen w-full">
       <PlateEditor />
