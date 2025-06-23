@@ -21,10 +21,10 @@ type delayer = (buffer: string) => number;
  * Smooths text streaming output.
  *
  * @param delayInMs - The delay in milliseconds between each chunk. Defaults to
- *   10ms. Can be set to `null` to skip the delay.
+ * 10ms. Can be set to `null` to skip the delay.
  * @param chunking - Controls how the text is chunked for streaming. Use "word"
- *   to stream word by word (default), "line" to stream line by line, or provide
- *   a custom RegExp pattern for custom chunking.
+ * to stream word by word (default), "line" to stream line by line, or provide
+ * a custom RegExp pattern for custom chunking.
  * @returns A transform stream that smooths text streaming output.
  */
 function smoothStream<TOOLS extends ToolSet>({
@@ -124,28 +124,34 @@ function smoothStream<TOOLS extends ToolSet>({
 
 const CHUNKING_REGEXPS = {
   line: /\n+/m,
-  list: /.{8}/m,
+  list: /.{8}/m, // Changed to list from word
   word: /\S+\s+/m,
 };
 
 export async function POST(req: NextRequest) {
   const { apiKey: key, messages, system } = await req.json();
 
-  const apiKey = key || process.env.OPENAI_API_KEY;
+  // Use OPENROUTER_API_KEY for DeepSeek via OpenRouter
+  const apiKey = key || process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
     return NextResponse.json(
-      { error: 'Missing OpenAI API key.' },
+      { error: 'Missing OpenRouter API key.' }, // Updated error message
       { status: 401 }
     );
   }
 
-  const openai = createOpenAI({ apiKey });
+  // Configure createOpenAI to use OpenRouter's base URL and specify DeepSeek model
+  const openai = createOpenAI({
+    apiKey,
+    baseURL: 'https://openrouter.ai/api/v1', // OpenRouter base URL
+  });
 
   let isInCodeBlock = false;
   let isInTable = false;
   let isInList = false;
   let isInLink = false;
+
   try {
     const result = streamText({
       experimental_transform: smoothStream({
@@ -200,14 +206,15 @@ export async function POST(req: NextRequest) {
       }),
       maxTokens: 2048,
       messages: convertToCoreMessages(messages),
-      model: openai('gpt-4o'),
+      model: openai('deepseek/deepseek-chat'), // Specify DeepSeek model
       system: system,
     });
 
     return result.toDataStreamResponse();
-  } catch {
+  } catch (error: any) { // Catch and log error
+    console.error('API Error:', error); // Log the error for debugging
     return NextResponse.json(
-      { error: 'Failed to process AI request' },
+      { error: error.message ?? 'Failed to process AI request' },
       { status: 500 }
     );
   }
