@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 import {
   IconNotes,
   IconChecklist,
@@ -11,55 +11,41 @@ import {
   IconSparkles,
   IconBulb,
   IconInnerShadowTop,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 
-import { NavUser } from "@/components/dashboard/nav-user"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+import { useRouter, usePathname } from "next/navigation";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
+import { NavUser } from "@/components/dashboard/nav-user";
+import { Session } from "next-auth";
 
-// Import Session and User types from next-auth
-import { Session } from "next-auth"; // You might need to import Session directly
-// Or if you want just the User type:
-// import { User as NextAuthUser } from "next-auth";
-
-
-interface AppSidebarCustomProps {
-  activeItem: string;
-  onSelect: (item: string) => void;
-  session: Session | null; // <--- Add session prop here, it can be null if not logged in
+interface AppSidebarProps extends Omit<React.ComponentProps<typeof Sidebar>, "onSelect"> {
+  session: Session | null;
 }
 
-type AppSidebarProps = AppSidebarCustomProps &
-  Omit<React.ComponentProps<typeof Sidebar>, "onSelect">
-
 const navMain = [
-  { title: "Notes", icon: IconNotes },
-  { title: "Tasks", icon: IconChecklist },
-  { title: "Journaling", icon: IconNotebook },
-  { title: "Calendar", icon: IconCalendar },
-]
+  { title: "Notes", icon: IconNotes, path: "/dashboard/notes" },
+  { title: "Tasks", icon: IconChecklist, path: "/dashboard/tasks" },
+  { title: "Journal", icon: IconNotebook, path: "/dashboard/journal" },
+  { title: "Calendar", icon: IconCalendar, path: "/dashboard/calendar" },
+];
 
 const navSecondary = [
-  { title: "Search", icon: IconSearch },
-  { title: "AI Chat", icon: IconSparkles },
-  { title: "Insights", icon: IconBulb },
-  { title: "Settings", icon: IconSettings },
-]
+  { title: "Search", icon: IconSearch, path: "/dashboard/search" },
+  { title: "AI Chat", icon: IconSparkles, path: "/dashboard/ai-chat" },
+  { title: "Insights", icon: IconBulb, path: "/dashboard/insights" },
+  { title: "Settings", icon: IconSettings, path: "/dashboard/settings" },
+];
 
-export function AppSidebar({ activeItem, onSelect, session, ...props }: AppSidebarProps) {
-  // Extract user data from session, providing fallbacks
+export function AppSidebar({ session, ...props }: AppSidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+
   const user = session?.user;
   const userName = user?.name || "Guest User";
   const userEmail = user?.email || "guest@example.com";
-  // NextAuth's `image` property in Session.user typically holds the avatar URL
-  const userAvatar = user?.image || "/avatars/default.jpg"; // Provide a default local avatar path
+  const userAvatar = user?.image || "/avatars/default.jpg";
+
+  const isActive = (path: string) => pathname === path;
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -84,10 +70,10 @@ export function AppSidebar({ activeItem, onSelect, session, ...props }: AppSideb
           {navMain.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
-                onClick={() => onSelect(item.title)}
-                data-active={activeItem === item.title}
+                onClick={() => router.push(item.path)}
+                data-active={isActive(item.path)}
                 className={
-                  activeItem === item.title
+                  isActive(item.path)
                     ? "bg-muted text-primary"
                     : "hover:bg-muted/50"
                 }
@@ -103,10 +89,10 @@ export function AppSidebar({ activeItem, onSelect, session, ...props }: AppSideb
           {navSecondary.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
-                onClick={() => onSelect(item.title)}
-                data-active={activeItem === item.title}
+                onClick={() => router.push(item.path)}
+                data-active={isActive(item.path)}
                 className={
-                  activeItem === item.title
+                  isActive(item.path)
                     ? "bg-muted text-primary"
                     : "hover:bg-muted/50"
                 }
@@ -122,12 +108,12 @@ export function AppSidebar({ activeItem, onSelect, session, ...props }: AppSideb
       <SidebarFooter>
         <NavUser
           user={{
-            name: userName, // <--- Pass dynamic name
-            email: userEmail, // <--- Pass dynamic email
-            avatar: userAvatar, // <--- Pass dynamic avatar
+            name: userName,
+            email: userEmail,
+            avatar: userAvatar,
           }}
         />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
