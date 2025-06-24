@@ -27,35 +27,29 @@ export function PlateEditor() {
 
 const value = [
   {
-    children: [{ text: 'Welcome to the Plate Playground!' }],
     type: 'h1',
+    children: [{ text: 'Stratify – Your AI Notes Companion' }],
   },
   {
+    type: 'p',
     children: [
-      { text: 'Experience a modern rich-text editor built with ' },
+      { text: 'Stratify lets you capture, organize, and enhance your thoughts with AI assistance. Built with ' },
       { children: [{ text: 'Slate' }], type: 'a', url: 'https://slatejs.org' },
       { text: ' and ' },
       { children: [{ text: 'React' }], type: 'a', url: 'https://reactjs.org' },
-      {
-        text: ". This playground showcases just a part of Plate's capabilities. ",
-      },
-      {
-        children: [{ text: 'Explore the documentation' }],
-        type: 'a',
-        url: '/docs',
-      },
-      { text: ' to discover more.' },
+      { text: ", this editor is part of Stratify's powerful productivity suite. " },
+      { children: [{ text: 'Explore the full platform' }], type: 'a', url: '/about' },
+      { text: ' to learn more.' },
     ],
-    type: 'p',
   },
-  // Suggestions & Comments Section
   {
-    children: [{ text: 'Collaborative Editing' }],
     type: 'h2',
+    children: [{ text: 'Collaborative Notes & Journals' }],
   },
   {
+    type: 'p',
     children: [
-      { text: 'Review and refine content seamlessly. Use ' },
+      { text: 'Edit, review, and collaborate in real-time. Add ' },
       {
         children: [
           {
@@ -92,7 +86,7 @@ const value = [
         },
         text: 'like this added text',
       },
-      { text: ' or to ' },
+      { text: ' or ' },
       {
         suggestion: true,
         suggestion_playground2: {
@@ -101,22 +95,20 @@ const value = [
           type: 'remove',
           userId: 'bob',
         },
-        text: 'mark text for removal',
+        text: 'remove parts that are no longer relevant',
       },
-      { text: '. Discuss changes using ' },
+      { text: '. Provide feedback using ' },
       {
-        children: [
-          { comment: true, comment_discussion4: true, text: 'comments' },
-        ],
+        children: [{ comment: true, comment_discussion4: true, text: 'comments' }],
         type: 'a',
         url: '/docs/comment',
       },
       {
         comment: true,
         comment_discussion4: true,
-        text: ' on many text segments',
+        text: ' like this one',
       },
-      { text: '. You can even have ' },
+      { text: '. You can even apply ' },
       {
         comment: true,
         comment_discussion6: true,
@@ -127,163 +119,104 @@ const value = [
           type: 'insert',
           userId: 'charlie',
         },
-        text: 'overlapping',
+        text: 'overlapping annotations',
       },
-      { text: ' annotations!' },
+      { text: ' for complex collaborative discussions.' },
     ],
-    type: 'p',
   },
-  // {
-  //   children: [
-  //     {
-  //       text: 'Block-level suggestions are also supported for broader feedback.',
-  //     },
-  //   ],
-  //   suggestion: {
-  //     suggestionId: 'suggestionBlock1',
-  //     type: 'block',
-  //     userId: 'charlie',
-  //   },
-  //   type: 'p',
-  // },
-  // AI Section
   {
-    children: [{ text: 'AI-Powered Editing' }],
     type: 'h2',
+    children: [{ text: 'AI Assistant Shortcuts' }],
   },
   {
+    type: 'p',
     children: [
-      { text: 'Boost your productivity with integrated ' },
-      {
-        children: [{ text: 'AI SDK' }],
-        type: 'a',
-        url: '/docs/ai',
-      },
-      { text: '. Press ' },
+      { text: 'Use Stratify AI to summarize, rewrite, or continue writing. Press ' },
       { kbd: true, text: '⌘+J' },
       { text: ' or ' },
       { kbd: true, text: 'Space' },
-      { text: ' in an empty line to:' },
+      { text: ' on a new line to activate.' },
     ],
-    type: 'p',
   },
   {
-    children: [
-      { text: 'Generate content (continue writing, summarize, explain)' },
-    ],
+    type: 'p',
     indent: 1,
     listStyleType: 'disc',
-    type: 'p',
+    children: [{ text: 'Summarize lengthy notes or lectures' }],
   },
   {
-    children: [
-      { text: 'Edit existing text (improve, fix grammar, change tone)' },
-    ],
+    type: 'p',
     indent: 1,
     listStyleType: 'disc',
-    type: 'p',
+    children: [{ text: 'Fix grammar or adjust tone' }],
   },
-  // Core Features Section (Combined)
   {
-    children: [{ text: 'Rich Content Editing' }],
+    type: 'p',
+    indent: 1,
+    listStyleType: 'disc',
+    children: [{ text: 'Generate task lists or daily reflections' }],
+  },
+  {
     type: 'h2',
+    children: [{ text: 'Journaling with Insight' }],
   },
   {
+    type: 'p',
     children: [
-      { text: 'Structure your content with ' },
-      {
-        children: [{ text: 'headings' }],
-        type: 'a',
-        url: '/docs/heading',
-      },
+      { text: 'Log your day, thoughts, or goals. Stratify’s journaling tools offer AI-powered prompts and stress tracking insights over time.' },
+    ],
+  },
+  {
+    type: 'h2',
+    children: [{ text: 'Formatting & Structure' }],
+  },
+  {
+    type: 'p',
+    children: [
+      { text: 'Use ' },
+      { children: [{ text: 'headings' }], type: 'a', url: '/docs/heading' },
       { text: ', ' },
-      {
-        children: [{ text: 'lists' }],
-        type: 'a',
-        url: '/docs/list',
-      },
-      { text: ', and ' },
-      {
-        children: [{ text: 'quotes' }],
-        type: 'a',
-        url: '/docs/blockquote',
-      },
-      { text: '. Apply ' },
-      {
-        children: [{ text: 'marks' }],
-        type: 'a',
-        url: '/docs/basic-marks',
-      },
-      { text: ' like ' },
+      { children: [{ text: 'lists' }], type: 'a', url: '/docs/list' },
+      { text: ', ' },
+      { children: [{ text: 'quotes' }], type: 'a', url: '/docs/blockquote' },
+      { text: ', and Markdown-like formatting such as ' },
       { bold: true, text: 'bold' },
       { text: ', ' },
       { italic: true, text: 'italic' },
       { text: ', ' },
       { text: 'underline', underline: true },
-      { text: ', ' },
-      { strikethrough: true, text: 'strikethrough' },
       { text: ', and ' },
-      { code: true, text: 'code' },
-      { text: '. Use ' },
-      {
-        children: [{ text: 'autoformatting' }],
-        type: 'a',
-        url: '/docs/autoformat',
-      },
-      { text: ' for ' },
-      {
-        children: [{ text: 'Markdown' }],
-        type: 'a',
-        url: '/docs/markdown',
-      },
-      { text: '-like shortcuts (e.g., ' },
-      { kbd: true, text: '* ' },
-      { text: ' for lists, ' },
-      { kbd: true, text: '# ' },
-      { text: ' for H1).' },
+      { strikethrough: true, text: 'strikethrough' },
+      { text: ' to keep your notes clear and expressive.' },
     ],
-    type: 'p',
   },
   {
-    children: [
-      {
-        children: [
-          {
-            text: 'Blockquotes are great for highlighting important information.',
-          },
-        ],
-        type: 'p',
-      },
-    ],
     type: 'blockquote',
-  },
-  {
     children: [
-      { children: [{ text: 'function hello() {' }], type: 'code_line' },
       {
-        children: [{ text: "  console.info('Code blocks are supported!');" }],
-        type: 'code_line',
+        type: 'p',
+        children: [{ text: 'Reflect. Refocus. Rise higher. – Stratify AI' }],
       },
-      { children: [{ text: '}' }], type: 'code_line' },
     ],
-    lang: 'javascript',
-    type: 'code_block',
   },
   {
+    type: 'code_block',
+    lang: 'javascript',
     children: [
-      { text: 'Create ' },
+      { type: 'code_line', children: [{ text: 'function clearMind() {' }] },
       {
-        children: [{ text: 'links' }],
-        type: 'a',
-        url: '/docs/link',
+        type: 'code_line',
+        children: [{ text: "  return 'All distractions removed';" }],
       },
-      { text: ', ' },
-      {
-        children: [{ text: '@mention' }],
-        type: 'a',
-        url: '/docs/mention',
-      },
-      { text: ' users like ' },
+      { type: 'code_line', children: [{ text: '}' }] },
+    ],
+  },
+  {
+    type: 'p',
+    children: [
+      { text: 'Mention teammates with ' },
+      { children: [{ text: '@mention' }], type: 'a', url: '/docs/mention' },
+      { text: ', like ' },
       { children: [{ text: '' }], type: 'mention', value: 'Alice' },
       { text: ', or insert ' },
       {
@@ -291,293 +224,54 @@ const value = [
         type: 'a',
         url: '/docs/emoji',
       },
-      { text: ' ✨. Use the ' },
-      {
-        children: [{ text: 'slash command' }],
-        type: 'a',
-        url: '/docs/slash-command',
-      },
-      { text: ' (/) for quick access to elements.' },
+      { text: ' 🎯 to express emotions and context.' },
     ],
-    type: 'p',
   },
-  // Table Section
   {
-    children: [{ text: 'How Plate Compares' }],
     type: 'h3',
+    children: [{ text: 'Embed Media' }],
   },
   {
-    children: [
-      {
-        text: 'Plate offers many features out-of-the-box as free, open-source plugins.',
-      },
-    ],
     type: 'p',
-  },
-  {
     children: [
-      {
-        children: [
-          {
-            children: [
-              { children: [{ bold: true, text: 'Feature' }], type: 'p' },
-            ],
-            type: 'th',
-          },
-          {
-            children: [
-              {
-                children: [{ bold: true, text: 'Plate (Free & OSS)' }],
-                type: 'p',
-              },
-            ],
-            type: 'th',
-          },
-          {
-            children: [
-              { children: [{ bold: true, text: 'Tiptap' }], type: 'p' },
-            ],
-            type: 'th',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [{ children: [{ text: 'AI' }], type: 'p' }],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [{ children: [{ text: 'Paid Extension' }], type: 'p' }],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [{ children: [{ text: 'Comments' }], type: 'p' }],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [{ children: [{ text: 'Paid Extension' }], type: 'p' }],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [{ children: [{ text: 'Suggestions' }], type: 'p' }],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [
-              { children: [{ text: 'Paid (Comments Pro)' }], type: 'p' },
-            ],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [{ children: [{ text: 'Emoji Picker' }], type: 'p' }],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [{ children: [{ text: 'Paid Extension' }], type: 'p' }],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [
-              { children: [{ text: 'Table of Contents' }], type: 'p' },
-            ],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [{ children: [{ text: 'Paid Extension' }], type: 'p' }],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [{ children: [{ text: 'Drag Handle' }], type: 'p' }],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [{ children: [{ text: 'Paid Extension' }], type: 'p' }],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
-      {
-        children: [
-          {
-            children: [
-              { children: [{ text: 'Collaboration (Yjs)' }], type: 'p' },
-            ],
-            type: 'td',
-          },
-          {
-            children: [
-              {
-                attributes: { align: 'center' },
-                children: [{ text: '✅' }],
-                type: 'p',
-              },
-            ],
-            type: 'td',
-          },
-          {
-            children: [
-              { children: [{ text: 'Hocuspocus (OSS/Paid)' }], type: 'p' },
-            ],
-            type: 'td',
-          },
-        ],
-        type: 'tr',
-      },
+      { text: 'Add files, audio, and visuals to enrich your notes. Drag-and-drop makes it easy.' },
     ],
-    type: 'table',
-  },
-  // Media Section
-  {
-    children: [{ text: 'Images and Media' }],
-    type: 'h3',
   },
   {
-    children: [
-      {
-        text: 'Embed rich media like images directly in your content. Supports ',
-      },
-      {
-        children: [{ text: 'Media uploads' }],
-        type: 'a',
-        url: '/docs/media',
-      },
-      {
-        text: ' and ',
-      },
-      {
-        children: [{ text: 'drag & drop' }],
-        type: 'a',
-        url: '/docs/dnd',
-      },
-      {
-        text: ' for a smooth experience.',
-      },
-    ],
-    type: 'p',
-  },
-  {
-    attributes: { align: 'center' },
+    type: 'img',
+    url: 'https://images.unsplash.com/photo-1712688930249-98e1963af7bd?q=80&w=600&auto=format&fit=crop',
+    width: '75%',
     caption: [
       {
-        children: [{ text: 'Images with captions provide context.' }],
         type: 'p',
+        children: [{ text: 'Visual notes help retain ideas better.' }],
       },
     ],
     children: [{ text: '' }],
-    type: 'img',
-    url: 'https://images.unsplash.com/photo-1712688930249-98e1963af7bd?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    width: '75%',
+    attributes: { align: 'center' },
   },
   {
-    children: [{ text: '' }],
-    isUpload: true,
-    name: 'sample.pdf',
     type: 'file',
-    url: 'https://s26.q4cdn.com/900411403/files/doc_downloads/test.pdf',
+    name: 'stratify-guide.pdf',
+    isUpload: true,
+    url: 'https://example.com/files/stratify-guide.pdf',
+    children: [{ text: '' }],
   },
   {
-    children: [{ text: '' }],
     type: 'audio',
     url: 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
+    children: [{ text: '' }],
   },
   {
-    children: [{ text: 'Table of Contents' }],
     type: 'h3',
+    children: [{ text: 'Table of Contents' }],
   },
   {
-    children: [{ text: '' }],
     type: 'toc',
+    children: [{ text: '' }],
   },
   {
-    children: [{ text: '' }],
     type: 'p',
+    children: [{ text: '' }],
   },
 ];

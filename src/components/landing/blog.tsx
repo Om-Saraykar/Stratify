@@ -1,5 +1,4 @@
 import { ArrowRight } from "lucide-react";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,58 +19,59 @@ interface Post {
   image: string;
 }
 
-interface Blog7Props {
-  tagline?: string; // Made optional
-  heading?: string; // Made optional
-  description?: string; // Made optional
-  buttonText?: string; // Made optional
-  buttonUrl?: string; // Made optional
-  posts?: Post[]; // Made optional
+interface StratifyBlogProps {
+  tagline?: string;
+  heading?: string;
+  description?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  posts?: Post[];
 }
+
 const Blog7 = ({
-  tagline = "Latest Updates",
-  heading = "Blog Posts",
-  description = "Discover the latest trends, tips, and best practices in modern web development. From UI components to design systems, stay updated with our expert insights.",
-  buttonText = "View all articles",
-  buttonUrl = "https://shadcnblocks.com",
+  tagline = "Stratify Insights",
+  heading = "Boost Your Productivity with AI",
+  description = "Explore the science and strategy behind productivity, mental wellness, and note-taking. Learn how Stratify combines AI with journaling, task management, and intelligent workflows to help you perform at your best.",
+  buttonText = "Explore all posts",
+  buttonUrl = "/blog",
   posts = [
     {
       id: "post-1",
-      title: "Getting Started with shadcn/ui Components",
+      title: "Mastering AI-Enhanced Note-Taking with Stratify",
       summary:
-        "Learn how to quickly integrate and customize shadcn/ui components in your Next.js projects. We'll cover installation, theming, and best practices for building modern interfaces.",
-      label: "Tutorial",
-      author: "Sarah Chen",
-      published: "1 Jan 2024",
-      url: "https://shadcnblocks.com",
-      image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
+        "See how Stratify leverages AI to summarize, organize, and retrieve your notes in seconds — no more manual chaos.",
+      label: "Notes",
+      author: "Om Saraykar",
+      published: "23 Jun 2025",
+      url: "/blog/ai-notes",
+      image: "/stratify-logo.png",
     },
     {
       id: "post-2",
-      title: "Building Accessible Web Applications",
+      title: "Tame Your Task List: Task Management that Works",
       summary:
-        "Explore how to create inclusive web experiences using shadcn/ui's accessible components. Discover practical tips for implementing ARIA labels, keyboard navigation, and semantic HTML.",
-      label: "Accessibility",
-      author: "Marcus Rodriguez",
-      published: "1 Jan 2024",
-      url: "https://shadcnblocks.com",
-      image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
+        "Turn your to-dos into done with Stratify’s intelligent task planner and daily productivity tracking.",
+      label: "Tasks",
+      author: "Om Saraykar",
+      published: "20 Jun 2025",
+      url: "/blog/task-mastery",
+      image: "/stratify-logo.png",
     },
     {
       id: "post-3",
-      title: "Modern Design Systems with Tailwind CSS",
+      title: "Journaling for Stress Relief and Focus",
       summary:
-        "Dive into creating scalable design systems using Tailwind CSS and shadcn/ui. Learn how to maintain consistency while building flexible and maintainable component libraries.",
-      label: "Design Systems",
-      author: "Emma Thompson",
-      published: "1 Jan 2024",
-      url: "https://shadcnblocks.com",
-      image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
+        "Discover guided journaling powered by AI to reflect, declutter your mind, and manage stress proactively.",
+      label: "Wellness",
+      author: "Om Saraykar",
+      published: "17 Jun 2025",
+      url: "/blog/journaling",
+      image: "/stratify-logo.png",
     },
   ],
-}: Blog7Props) => {
+}: StratifyBlogProps) => {
   return (
-    <section className="">
+    <section>
       <div className="container mx-auto flex flex-col items-center gap-16 lg:px-16">
         <div className="text-center">
           <Badge variant="secondary" className="mb-6">
@@ -84,7 +84,7 @@ const Blog7 = ({
             {description}
           </p>
           <Button variant="link" className="w-full sm:w-auto" asChild>
-            <a href={buttonUrl} target="_blank">
+            <a href={buttonUrl}>
               {buttonText}
               <ArrowRight className="ml-2 size-4" />
             </a>
@@ -92,14 +92,10 @@ const Blog7 = ({
         </div>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
           {posts.map((post) => (
-            <Card
-              key={post.id}
-              className="grid grid-rows-[auto_auto_1fr_auto] pt-0"
-            >
+            <Card key={post.id} className="grid grid-rows-[auto_auto_1fr_auto] pt-0">
               <div className="aspect-16/9 w-full">
                 <a
                   href={post.url}
-                  target="_blank"
                   className="transition-opacity duration-200 fade-in hover:opacity-70"
                 >
                   <img
@@ -111,9 +107,7 @@ const Blog7 = ({
               </div>
               <CardHeader>
                 <h3 className="text-lg font-semibold hover:underline md:text-xl">
-                  <a href={post.url} target="_blank">
-                    {post.title}
-                  </a>
+                  <a href={post.url}>{post.title}</a>
                 </h3>
               </CardHeader>
               <CardContent>
@@ -122,7 +116,6 @@ const Blog7 = ({
               <CardFooter>
                 <a
                   href={post.url}
-                  target="_blank"
                   className="flex items-center text-foreground hover:underline"
                 >
                   Read more

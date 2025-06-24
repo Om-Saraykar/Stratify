@@ -27,30 +27,30 @@ interface Footer7Props {
 
 const defaultSections = [
   {
-    title: "Product",
+    title: "Stratify",
     links: [
-      { name: "Overview", href: "#" },
-      { name: "Pricing", href: "#" },
-      { name: "Marketplace", href: "#" },
-      { name: "Features", href: "#" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { name: "About", href: "#" },
-      { name: "Team", href: "#" },
-      { name: "Blog", href: "#" },
-      { name: "Careers", href: "#" },
+      { name: "Features", href: "/#features" },
+      { name: "AI Chatbot", href: "/#chatbot" },
+      { name: "Calendar", href: "/#calendar" },
+      { name: "Journaling", href: "/#journaling" },
     ],
   },
   {
     title: "Resources",
     links: [
-      { name: "Help", href: "#" },
-      { name: "Sales", href: "#" },
-      { name: "Advertise", href: "#" },
-      { name: "Privacy", href: "#" },
+      { name: "Blog", href: "/blog" },
+      { name: "Help Center", href: "/help" },
+      { name: "Community", href: "/community" },
+      { name: "Changelog", href: "/changelog" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { name: "About Us", href: "/about" },
+      { name: "Careers", href: "/careers" },
+      { name: "Contact", href: "/contact" },
+      { name: "Press", href: "/press" },
     ],
   },
 ];
@@ -63,30 +63,28 @@ const defaultSocialLinks = [
 ];
 
 const defaultLegalLinks = [
-  { name: "Terms and Conditions", href: "#" },
-  { name: "Privacy Policy", href: "#" },
+  { name: "Terms of Service", href: "/terms" },
+  { name: "Privacy Policy", href: "/privacy" },
 ];
 
 const Footer7 = ({
   logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
-    alt: "logo",
-    title: "Shadcnblocks.com",
+    url: "/",
+    src: "/stratify-logo.png",
+    alt: "Stratify Logo",
+    title: "Stratify",
   },
   sections = defaultSections,
-  description = "A collection of components for your startup business or side project.",
+  description = "Stratify is your all-in-one AI-powered productivity companion. Manage notes, tasks, journals, and stress with ease.",
   socialLinks = defaultSocialLinks,
-  copyright = "© 2024 Shadcnblocks.com. All rights reserved.",
+  copyright = "© 2025 Stratify. All rights reserved.",
   legalLinks = defaultLegalLinks,
 }: Footer7Props) => {
   return (
-    <section className="pt-32 pb-8 w-full px-20 ">
-      {/* Changed 'container' to 'max-w-screen-2xl' and kept 'mx-auto' for centering */}
-      <div className="max-w-screen-2xl px-4 sm:px-6 lg:px-8">
+    <section className="pt-32 pb-8 w-full px-20">
+      <div className="max-w-screen-2xl px-4 sm:px-6 lg:px-8 mx-auto">
         <div className="flex w-full flex-col justify-between gap-10 lg:flex-row lg:items-start lg:text-left">
           <div className="flex w-full flex-col justify-between gap-6 lg:items-start">
-            {/* Logo */}
             <div className="flex items-center gap-2 lg:justify-start">
               <a href={logo.url}>
                 <img
@@ -134,7 +132,7 @@ const Footer7 = ({
           <ul className="order-1 flex flex-col gap-2 md:order-2 md:flex-row">
             {legalLinks.map((link, idx) => (
               <li key={idx} className="hover:text-primary">
-                <a href={link.href}> {link.name}</a>
+                <a href={link.href}>{link.name}</a>
               </li>
             ))}
           </ul>

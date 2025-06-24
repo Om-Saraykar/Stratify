@@ -93,7 +93,7 @@ export function NewNoteDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button type="button" variant="outline" className="gap-2">
+          <Button type="button" variant="default" className="gap-2 cursor-pointer">
             <Plus className="w-4 h-4" />
             Add Entry
           </Button>
