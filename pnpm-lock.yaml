@@ -206,6 +206,9 @@ importers:
       ai:
         specifier: ^4.3.16
         version: 4.3.16(react@19.1.0)(zod@3.25.67)
+      ai-repo:
+        specifier: github:vercel/ai
+        version: https://codeload.github.com/vercel/ai/tar.gz/d3f98a0c5ee847efe5716c91100bbc3343096a33
       bcrypt:
         specifier: ^6.0.0
         version: 6.0.0
@@ -249,7 +252,7 @@ importers:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       openai:
-        specifier: ^5.6.0
+        specifier: ^5.7.0
         version: 5.7.0(zod@3.25.67)
       pdf-lib:
         specifier: ^1.17.1
@@ -2270,6 +2273,11 @@ packages:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  ai-repo@https://codeload.github.com/vercel/ai/tar.gz/d3f98a0c5ee847efe5716c91100bbc3343096a33:
+    resolution: {tarball: https://codeload.github.com/vercel/ai/tar.gz/d3f98a0c5ee847efe5716c91100bbc3343096a33}
+    version: 0.0.0
+    engines: {node: ^18.0.0 || ^20.0.0 || ^22.0.0}
 
   ai@4.3.16:
     resolution: {integrity: sha512-KUDwlThJ5tr2Vw0A1ZkbDKNME3wzWhuVfAOwIvFUzl1TPVDFAXDFTXio3p+jaKneB+dKNCvFFlolYmmgHttG1g==}
@@ -6672,6 +6680,8 @@ snapshots:
       acorn: 8.15.0
 
   acorn@8.15.0: {}
+
+  ai-repo@https://codeload.github.com/vercel/ai/tar.gz/d3f98a0c5ee847efe5716c91100bbc3343096a33: {}
 
   ai@4.3.16(react@19.1.0)(zod@3.25.67):
     dependencies:

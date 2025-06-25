@@ -31,9 +31,18 @@ export default function ClientDashboard({ session, children }: ClientDashboardPr
 
       <SidebarInset>
         <SiteHeader title={sectionTitle} />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
+        {/*
+          Removed flex-1 and flex-col from the direct child of SiteHeader.
+          Instead, we'll make the content area specifically manage its height.
+          Added `h-full` to ensure it takes the full height of `SidebarInset` after header.
+        */}
+        <div className="flex flex-col h-full overflow-hidden"> {/* Added overflow-hidden */}
+          <div className="@container/main flex flex-col flex-grow"> {/* Use flex-grow here */}
+            {/*
+              Adjusted padding here. The `Chat` component now handles its own internal padding.
+              This div will expand to fill the available space and contain the children.
+            */}
+            <div className="flex-grow flex flex-col p-4 md:p-6 lg:p-6 overflow-hidden"> {/* Added p-4/p-6 and overflow-hidden */}
               {children}
             </div>
           </div>

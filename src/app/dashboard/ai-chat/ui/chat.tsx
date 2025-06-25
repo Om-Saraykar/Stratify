@@ -1,3 +1,4 @@
+// ui/chat.tsx
 "use client"
 
 import {
@@ -70,7 +71,6 @@ export function Chat({
   const messagesRef = useRef(messages)
   messagesRef.current = messages
 
-  // Enhanced stop function that marks pending tool calls as cancelled
   const handleStop = useCallback(() => {
     stop?.()
 
@@ -96,7 +96,7 @@ export function Chat({
               state: "result",
               result: {
                 content: "Tool execution was cancelled",
-                __cancelled: true, // Special marker to indicate cancellation
+                __cancelled: true,
               },
             } as const
           }
@@ -193,28 +193,33 @@ export function Chat({
 
   return (
     <ChatContainer className={className}>
-      {isEmpty && append && suggestions ? (
-        <PromptSuggestions
-          label="Try these prompts ✨"
-          append={append}
-          suggestions={suggestions}
-        />
-      ) : null}
-
-      {messages.length > 0 ? (
-        <ChatMessages messages={messages}>
-          <MessageList
-            messages={messages}
-            isTyping={isTyping}
-            messageOptions={messageOptions}
+      {/*
+        This div will conditionally render either PromptSuggestions or ChatMessages
+        AND critically, it will use flex-grow to push the ChatForm to the bottom.
+      */}
+      <div className="flex-grow flex flex-col p-4 mt-10"> {/* Added p-4 for internal spacing */}
+        {isEmpty && append && suggestions ? (
+          <PromptSuggestions
+            label="Try these prompts ✨"
+            append={append}
+            suggestions={suggestions}
           />
-        </ChatMessages>
-      ) : null}
+        ) : messages.length > 0 ? (
+          <ChatMessages messages={messages}>
+            <MessageList
+              messages={messages}
+              isTyping={isTyping}
+              messageOptions={messageOptions}
+            />
+          </ChatMessages>
+        ) : null}
+      </div>
 
       <ChatForm
-        className="mt-80"
+        // Removed mt-80 from here, as flex-grow on the content above will handle positioning
         isPending={isGenerating || isTyping}
         handleSubmit={handleSubmit}
+        className="pt-4" // Keep pt-4 for separation from the messages/suggestions
       >
         {({ files, setFiles }) => (
           <MessageInput
@@ -250,27 +255,27 @@ export function ChatMessages({
 
   return (
     <div
-      className="grid grid-cols-1 overflow-y-auto pb-4"
+      // Ensure ChatMessages takes full width available in its parent (which is `flex-grow` above)
+      // The `overflow-y-auto` and `pr-4` are correct for internal scrolling.
+      className="flex-grow overflow-y-auto pr-4 pb-4 w-full"
       ref={containerRef}
       onScroll={handleScroll}
       onTouchStart={handleTouchStart}
     >
-      <div className="max-w-full [grid-column:1/1] [grid-row:1/1]">
+      <div className="max-w-full">
         {children}
       </div>
 
       {!shouldAutoScroll && (
-        <div className="pointer-events-none flex flex-1 items-end justify-end [grid-column:1/1] [grid-row:1/1]">
-          <div className="sticky bottom-0 left-0 flex w-full justify-end">
-            <Button
-              onClick={scrollToBottom}
-              className="pointer-events-auto h-8 w-8 rounded-full ease-in-out animate-in fade-in-0 slide-in-from-bottom-1"
-              size="icon"
-              variant="ghost"
-            >
-              <ArrowDown className="h-4 w-4" />
-            </Button>
-          </div>
+        <div className="sticky bottom-0 flex justify-end">
+          <Button
+            onClick={scrollToBottom}
+            className="h-8 w-8 rounded-full ease-in-out animate-in fade-in-0 slide-in-from-bottom-1"
+            size="icon"
+            variant="ghost"
+          >
+            <ArrowDown className="h-4 w-4" />
+          </Button>
         </div>
       )}
     </div>
@@ -284,7 +289,9 @@ export const ChatContainer = forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("flex flex-col space-between h-full w-full p-10", className)}
+      // Re-added justify-between to push the input to the bottom.
+      // Removed p-10 as padding is handled internally by sections.
+      className={cn("flex flex-col h-full w-full justify-between", className)}
       {...props}
     />
   )
@@ -320,7 +327,7 @@ export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
     }
 
     return (
-      <form ref={ref} onSubmit={onSubmit} className={className}>
+      <form ref={ref} onSubmit={onSubmit} className={cn("px-4 pb-4", className)}>
         {children({ files, setFiles })}
       </form>
     )

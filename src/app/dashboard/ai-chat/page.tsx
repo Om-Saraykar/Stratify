@@ -1,76 +1,34 @@
 "use client"
 
-import { useState } from "react"
-import { useChat, type UseChatOptions } from "@ai-sdk/react"
-
 import { cn } from "@/lib/utils"
 import { transcribeAudio } from "./lib/utils/audio"
 import { Chat } from "./ui/chat"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select"
+import { useOpenRouterChat } from "./hooks/use-openrouter-chat"
 
-const MODELS = [
-  { id: "llama-3.3-70b-versatile", name: "Llama 3.3 70B" },
-  { id: "deepseek-r1-distill-llama-70b", name: "Deepseek R1 70B" },
-]
-
-type ChatDemoProps = {
-  initialMessages?: UseChatOptions["initialMessages"]
-}
-
-export default function ChatDemo(props: ChatDemoProps) {
-  const [selectedModel, setSelectedModel] = useState(MODELS[0].id)
+export default function ChatDemo() {
   const {
     messages,
     input,
+    isStreaming,
+    setMessages,
     handleInputChange,
     handleSubmit,
     append,
     stop,
-    status,
-    setMessages,
-  } = useChat({
-    ...props,
-    api: "/api/chat",
-    body: {
-      model: selectedModel,
-    },
-  })
-
-  const isLoading = status === "submitted" || status === "streaming"
+  } = useOpenRouterChat()
 
   return (
-    <div className={cn("flex", "flex-col", "h-[500px]", "w-full")}>
-      <div className={cn("flex", "justify-end", "mb-2")}>
-        <Select value={selectedModel} onValueChange={setSelectedModel}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Select Model" />
-          </SelectTrigger>
-          <SelectContent>
-            {MODELS.map((model) => (
-              <SelectItem key={model.id} value={model.id}>
-                {model.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
+    <div className={cn("flex flex-col h-full w-full p-4")}>
       <Chat
-        className="grow"
+        className="flex-grow"
         messages={messages}
+        setMessages={setMessages}
         handleSubmit={handleSubmit}
         input={input}
         handleInputChange={handleInputChange}
-        isGenerating={isLoading}
-        stop={stop}
+        isGenerating={isStreaming}
         append={append}
-        setMessages={setMessages}
+        stop={stop}
         transcribeAudio={transcribeAudio}
         suggestions={[
           "What is the weather in San Francisco?",
