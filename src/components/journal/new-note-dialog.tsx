@@ -44,7 +44,8 @@ export function NewNoteDialog({
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [checklist, setChecklist] = useState<ChecklistItem[]>([])
-  const [image, setImage] = useState<File | null>(null)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imageUrl, setImageUrl] = useState<string | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
 
   useEffect(() => {
@@ -52,61 +53,65 @@ export function NewNoteDialog({
       setTitle(initialNote?.title || "")
       setDescription(initialNote?.description || "")
       setChecklist(initialNote?.checklist || [])
-      if (typeof initialNote?.image === "string") {
-        setImage(null)
+
+      if (initialNote?.image) {
+        if (typeof initialNote.image === "string") {
+          setImageUrl(initialNote.image)
+          setImageFile(null)
+        } else {
+          setImageFile(initialNote.image)
+          setImageUrl(null)
+        }
       } else {
-        setImage(initialNote?.image || null);
+        setImageFile(null)
+        setImageUrl(null)
       }
-      if (initialNote?.date) {
-        setSelectedDate(new Date(initialNote.date));
-      } else {
-        setSelectedDate(new Date());
-      }
+
+      setSelectedDate(initialNote?.date ? new Date(initialNote.date) : new Date())
     } else {
-      setTitle("");
-      setDescription("");
-      setChecklist([]);
-      setImage(null);
-      setSelectedDate(new Date());
+      // Reset when closed
+      setTitle("")
+      setDescription("")
+      setChecklist([])
+      setImageFile(null)
+      setImageUrl(null)
+      setSelectedDate(new Date())
     }
   }, [initialNote, isOpen])
 
-  function handleSave() {
+  const handleSave = () => {
     const note = {
       ...initialNote,
+      id: initialNote?.id, // Preserve ID for edits
       title,
       description,
       checklist,
-      image: image
-        ? URL.createObjectURL(image)
-        : initialNote?.image ?? null,
-      date: selectedDate?.toISOString() || new Date().toISOString(),
+      image: imageFile ? URL.createObjectURL(imageFile) : imageUrl ?? null,
+      date: (selectedDate ?? new Date()).toISOString(), 
     }
 
     onSave(note)
-    if (setIsOpen) {
-      setIsOpen(false)
-    }
+    setIsOpen?.(false)
   }
+
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button type="button" variant="default" className="gap-2 cursor-pointer">
+          <Button type="button" variant="default" className="gap-2">
             <Plus className="w-4 h-4" />
             Add Entry
           </Button>
         )}
       </DialogTrigger>
 
-      <DialogContent className="max-w-xl h-[80vh] flex flex-col p-0"> {/* Adjusted padding to 0 here */}
-        <DialogHeader className="flex-shrink-0 p-6 pb-4"> {/* Added back padding for header */}
+      <DialogContent className="max-w-xl h-[80vh] flex flex-col p-0">
+        <DialogHeader className="flex-shrink-0 p-6 pb-4">
           <DialogTitle>{initialNote ? "Edit Entry" : "New Entry"}</DialogTitle>
         </DialogHeader>
 
-        <div className="flex-grow overflow-y-auto px-6 py-2 space-y-6"> {/* Adjusted padding and spacing */}
-          {/* Title, description, checklist */}
+        <div className="flex-grow overflow-y-auto px-6 py-2 space-y-6">
           <DataBox
             title={title}
             description={description}
@@ -116,27 +121,31 @@ export function NewNoteDialog({
             onChecklistChange={setChecklist}
           />
 
-          {/* Date Picker */}
           <div>
             <h3 className="text-md font-semibold mb-2">Select Date</h3>
-            <div className="flex justify-center"> {/* Centered DayPicker */}
+            <div className="flex justify-center">
               <DayPicker
                 date={selectedDate}
-                onDateSelect={setSelectedDate}
+                onDateSelect={(date) => setSelectedDate(date)}
               />
             </div>
           </div>
 
-          {/* Image upload (moved to last) */}
           <div>
-            <h3 className="text-md font-semibold mb-2">Add Image</h3> {/* Added a heading for clarity */}
-            <ImageBox image={image} onImageChange={setImage} />
+            <h3 className="text-md font-semibold mb-2">Add Image</h3>
+            <ImageBox
+              image={imageFile || imageUrl}
+              onImageChange={(file) => {
+                setImageFile(file)
+                setImageUrl(null)
+              }}
+            />
           </div>
         </div>
 
-        <DialogFooter className="pt-4 px-6 pb-6 flex-shrink-0"> {/* Adjusted padding for footer */}
+        <DialogFooter className="pt-4 px-6 pb-6 flex-shrink-0">
           <Button type="button" onClick={handleSave}>
-            {initialNote ? "Update Note" : "Save Note"}
+            {initialNote ? "Update Entry" : "Save Entry"}
           </Button>
         </DialogFooter>
       </DialogContent>

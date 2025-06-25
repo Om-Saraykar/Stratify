@@ -45,7 +45,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/app/event-calendar/components/ui/dropdown-menu";
-import ThemeToggle from "@/app/event-calendar/components/theme-toggle";
+// import ThemeToggle from "@/app/event-calendar/components/theme-toggle";
 import { etiquettes } from "../big-calendar";
 import React from "react";
 

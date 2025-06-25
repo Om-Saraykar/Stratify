@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Configure createOpenAI to use OpenRouter's base URL and specify DeepSeek model
-  const openai = createOpenAI({
+  const deepseek = createOpenAI({
     apiKey,
     baseURL: 'https://openrouter.ai/api/v1', // OpenRouter base URL
   });
@@ -206,7 +206,7 @@ export async function POST(req: NextRequest) {
       }),
       maxTokens: 2048,
       messages: convertToCoreMessages(messages),
-      model: openai('deepseek/deepseek-chat'), // Specify DeepSeek model
+      model: deepseek('deepseek/deepseek-r1-distill-qwen-32b:free'), // Specify DeepSeek model
       system: system,
     });
 

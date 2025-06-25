@@ -44,7 +44,7 @@ const Blog7 = ({
       author: "Om Saraykar",
       published: "23 Jun 2025",
       url: "/blog/ai-notes",
-      image: "/stratify-logo.png",
+      image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
     },
     {
       id: "post-2",
@@ -55,7 +55,7 @@ const Blog7 = ({
       author: "Om Saraykar",
       published: "20 Jun 2025",
       url: "/blog/task-mastery",
-      image: "/stratify-logo.png",
+      image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
     },
     {
       id: "post-3",
@@ -66,7 +66,7 @@ const Blog7 = ({
       author: "Om Saraykar",
       published: "17 Jun 2025",
       url: "/blog/journaling",
-      image: "/stratify-logo.png",
+      image: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/placeholder-dark-1.svg",
     },
   ],
 }: StratifyBlogProps) => {
