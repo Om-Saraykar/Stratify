@@ -1,22 +1,26 @@
 "use client"
 
+import { useState } from "react"
 import { Table } from "@tanstack/react-table"
-import { X } from "lucide-react"
+import { Plus, X } from "lucide-react"
 
 import { Button } from "@/registry/new-york/ui/button"
 import { Input } from "@/registry/new-york/ui/input"
 import { DataTableViewOptions } from "./data-table-view-options"
-
 import { priorities, statuses } from "../data/data"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+import { NewTaskDialog } from "./new-task-dialog" // create this
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
+  refetch?: () => void // optional if using SWR/React Query
 }
 
 export function DataTableToolbar<TData>({
   table,
+  refetch,
 }: DataTableToolbarProps<TData>) {
+  const [showNewTaskDialog, setShowNewTaskDialog] = useState(false)
   const isFiltered = table.getState().columnFilters.length > 0
 
   return (
@@ -55,7 +59,23 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
-      <DataTableViewOptions table={table} />
+      <div className="flex items-center space-x-2">
+        <DataTableViewOptions table={table} />
+        <Button 
+          variant="default"
+          onClick={() => setShowNewTaskDialog(true)} 
+          className="h-8"
+        >
+          <Plus className="w-4 h-4" />
+          New Task
+        </Button>
+      </div>
+
+      <NewTaskDialog
+        open={showNewTaskDialog}
+        onOpenChange={setShowNewTaskDialog}
+        onTaskCreated={refetch}
+      />
     </div>
   )
 }

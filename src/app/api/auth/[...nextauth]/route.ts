@@ -11,7 +11,6 @@ import type { SessionStrategy } from "next-auth"; // For NextAuth v4
 // import type { AuthOptions } from "@auth/core"; // and then AuthOptions['session']['strategy']
 // For simplicity and common NextAuth.js v4 usage, SessionStrategy is usually available directly.
 
-
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [

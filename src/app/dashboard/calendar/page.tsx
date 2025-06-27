@@ -1,5 +1,3 @@
-import { AppSidebar } from "@/app/event-calendar/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/app/event-calendar/components/ui/sidebar";
 import BigCalendar from "@/app/event-calendar/components/big-calendar";
 import { CalendarProvider } from "@/app/event-calendar/components/event-calendar/calendar-context";
 

@@ -200,16 +200,21 @@ const value = [
     ],
   },
   {
-    type: 'code_block',
-    lang: 'javascript',
-    children: [
-      { type: 'code_line', children: [{ text: 'function clearMind() {' }] },
-      {
-        type: 'code_line',
-        children: [{ text: "  return 'All distractions removed';" }],
-      },
-      { type: 'code_line', children: [{ text: '}' }] },
-    ],
+    "type": "code_block",
+    "lang": "python",
+    "children": [
+      { "type": "code_line", "children": [{ "text": "def binary_search(arr, target):" }] },
+      { "type": "code_line", "children": [{ "text": "    left, right = 0, len(arr) - 1" }] },
+      { "type": "code_line", "children": [{ "text": "    while left <= right:" }] },
+      { "type": "code_line", "children": [{ "text": "        mid = (left + right) // 2" }] },
+      { "type": "code_line", "children": [{ "text": "        if arr[mid] == target:" }] },
+      { "type": "code_line", "children": [{ "text": "            return mid" }] },
+      { "type": "code_line", "children": [{ "text": "        elif arr[mid] < target:" }] },
+      { "type": "code_line", "children": [{ "text": "            left = mid + 1" }] },
+      { "type": "code_line", "children": [{ "text": "        else:" }] },
+      { "type": "code_line", "children": [{ "text": "            right = mid - 1" }] },
+      { "type": "code_line", "children": [{ "text": "    return -1" }] }
+    ]
   },
   {
     type: 'p',

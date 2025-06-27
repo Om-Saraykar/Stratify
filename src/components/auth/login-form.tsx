@@ -41,7 +41,7 @@ export function LoginForm({
       console.error('Login error:', result.error);
     } else if (result?.ok) {
       console.log('Login successful!');
-      router.push('/dashboard'); // Redirect to dashboard on success
+      router.push('/dashboard/notes'); // Redirect to dashboard on success
     }
     setIsLoading(false);
   };

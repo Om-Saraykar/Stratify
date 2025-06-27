@@ -30,10 +30,8 @@ const navMain = [
 ];
 
 const navSecondary = [
-  { title: "Search", icon: IconSearch, path: "/dashboard/search" },
   { title: "AI Chat", icon: IconSparkles, path: "/dashboard/ai-chat" },
-  { title: "Insights", icon: IconBulb, path: "/dashboard/insights" },
-  { title: "Settings", icon: IconSettings, path: "/dashboard/settings" },
+  // { title: "Settings", icon: IconSettings, path: "/dashboard/settings" },
 ];
 
 export function AppSidebar({ session, ...props }: AppSidebarProps) {
@@ -43,7 +41,7 @@ export function AppSidebar({ session, ...props }: AppSidebarProps) {
   const user = session?.user;
   const userName = user?.name || "Guest User";
   const userEmail = user?.email || "guest@example.com";
-  const userAvatar = user?.image || "/avatars/default.jpg";
+  const userAvatar = user?.image || "";
 
   const isActive = (path: string) => pathname === path;
 
@@ -73,9 +71,11 @@ export function AppSidebar({ session, ...props }: AppSidebarProps) {
                 onClick={() => router.push(item.path)}
                 data-active={isActive(item.path)}
                 className={
-                  isActive(item.path)
+                  `cursor-pointer
+                  ${isActive(item.path)
                     ? "bg-muted text-primary"
-                    : "hover:bg-muted/50"
+                    : "hover:bg-muted/50"}
+                  ` 
                 }
               >
                 <item.icon className="size-5" />

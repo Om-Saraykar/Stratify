@@ -206,7 +206,8 @@ export async function POST(req: NextRequest) {
       }),
       maxTokens: 2048,
       messages: convertToCoreMessages(messages),
-      model: deepseek('deepseek/deepseek-r1-distill-qwen-32b:free'), // Specify DeepSeek model
+      model: deepseek('mistralai/mistral-small-3.2-24b-instruct:free'), // deepseek/deepseek-r1-distill-qwen-32b:free
+      // deepseek/deepseek-r1-0528:free
       system: system,
     });
 

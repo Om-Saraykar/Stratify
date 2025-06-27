@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY
 const OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-const MODEL = "deepseek/deepseek-r1-distill-qwen-32b:free"
+const MODEL = "mistralai/mistral-small-3.2-24b-instruct:free" // deepseek/deepseek-r1-distill-qwen-32b:free
 
 export async function POST(req: NextRequest) {
   try {
