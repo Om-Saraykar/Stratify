@@ -1,47 +1,34 @@
-import type { NextRequest } from 'next/server';
+// pages/api/ai/copilot.ts
 
-import { createOpenAI } from '@ai-sdk/openai';
-import { generateText } from 'ai';
-import { NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-export async function POST(req: NextRequest) {
-  const {
-    apiKey: key,
-    model = 'gpt-4o-mini',
-    prompt,
-    system,
-  } = await req.json();
-
-  const apiKey = key || process.env.OPENAI_API_KEY;
-
-  if (!apiKey) {
-    return NextResponse.json(
-      { error: 'Missing OpenAI API key.' },
-      { status: 401 }
-    );
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const openai = createOpenAI({ apiKey });
-
   try {
-    const result = await generateText({
-      abortSignal: req.signal,
-      maxTokens: 50,
-      model: openai(model),
-      prompt: prompt,
-      system,
-      temperature: 0.7,
+    const { system, prompt } = req.body;
+
+    const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'deepseek:latest',
+        prompt: `${system}\n\n${prompt}`,
+        stream: false,
+      }),
     });
 
-    return NextResponse.json(result);
-  } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      return NextResponse.json(null, { status: 408 });
+    if (!ollamaResponse.ok) {
+      throw new Error('Failed to fetch from Ollama');
     }
 
-    return NextResponse.json(
-      { error: 'Failed to process AI request' },
-      { status: 500 }
-    );
+    const data = await ollamaResponse.json();
+
+    return res.status(200).json({ completion: data.response.trim() });
+  } catch (error) {
+    console.error('Ollama error:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }

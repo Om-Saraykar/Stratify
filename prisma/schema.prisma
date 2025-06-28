@@ -41,6 +41,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Task Task[]
+  Notebook Notebook[]
 }
 
 model Account {
@@ -111,4 +112,14 @@ model Task {
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+}
+
+model Notebook {
+  id          String   @id @default(cuid())
+  title       String
+  content     Json
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

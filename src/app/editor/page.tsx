@@ -14,8 +14,7 @@ export default async function NotesPage() {
 
   return (
     <div className="h-screen w-full">
-      <PlateEditor />
-
+      <PlateEditor notebookId={''} initialTitle={''} initialContent={[]} />
       <Toaster />
     </div>
   );

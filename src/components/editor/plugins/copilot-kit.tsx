@@ -2,7 +2,6 @@
 
 import type { TElement } from 'platejs';
 
-import { faker } from '@faker-js/faker';
 import { CopilotPlugin } from '@platejs/ai/react';
 import { serializeMd, stripMarkdown } from '@platejs/markdown';
 
@@ -18,21 +17,20 @@ export const CopilotKit = [
         api: '/api/ai/copilot',
         body: {
           system: `You are an advanced AI writing assistant, similar to VSCode Copilot but for general text. Your task is to predict and generate the next part of the text based on the given context.
-  
-  Rules:
-  - Continue the text naturally up to the next punctuation mark (., ,, ;, :, ?, or !).
-  - Maintain style and tone. Don't repeat given text.
-  - For unclear context, provide the most likely continuation.
-  - Handle code snippets, lists, or structured text if needed.
-  - Don't include """ in your response.
-  - CRITICAL: Always end with a punctuation mark.
-  - CRITICAL: Avoid starting a new block. Do not use block formatting like >, #, 1., 2., -, etc. The suggestion should continue in the same block as the context.
-  - If no context is provided or you can't generate a continuation, return "0" without explanation.`,
+
+Rules:
+- Continue the text naturally up to the next punctuation mark (., ,, ;, :, ?, or !).
+- Maintain style and tone. Don't repeat given text.
+- For unclear context, provide the most likely continuation.
+- Handle code snippets, lists, or structured text if needed.
+- Don't include """ in your response.
+- CRITICAL: Always end with a punctuation mark.
+- CRITICAL: Avoid starting a new block. Do not use block formatting like >, #, 1., 2., -, etc. The suggestion should continue in the same block as the context.
+- If no context is provided or you can't generate a continuation, return "0" without explanation.`,
         },
         onError: () => {
-          // Mock the API response. Remove it when you implement the route /api/ai/copilot
           api.copilot.setBlockSuggestion({
-            text: stripMarkdown(faker.lorem.sentence()),
+            text: 'Error generating suggestion.',
           });
         },
         onFinish: (_, completion) => {
@@ -43,7 +41,7 @@ export const CopilotKit = [
           });
         },
       },
-      debounceDelay: 500,
+      debounceDelay: 5000,
       renderGhostText: GhostText,
       getPrompt: ({ editor }) => {
         const contextEntry = editor.api.block({ highest: true });
@@ -55,9 +53,9 @@ export const CopilotKit = [
         });
 
         return `Continue the text up to the next punctuation mark:
-  """
-  ${prompt}
-  """`;
+"""
+${prompt}
+"""`;
       },
     },
     shortcuts: {

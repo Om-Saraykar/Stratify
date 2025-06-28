@@ -1,29 +1,67 @@
 'use client';
 
 import * as React from 'react';
-
 import { Plate, usePlateEditor } from 'platejs/react';
 
 import { EditorKit } from '@/components/editor/editor-kit';
 import { SettingsDialog } from '@/components/editor/settings-dialog';
 import { Editor, EditorContainer } from '@/components/ui/editor';
+import { useCallback } from 'react';
+import { debounce } from 'lodash';
 
-export function PlateEditor() {
+type PlateEditorProps = {
+  notebookId: string;
+  initialTitle: string;
+  initialContent: any;
+};
+
+export function PlateEditor({ notebookId, initialTitle, initialContent }: PlateEditorProps) {
   const editor = usePlateEditor({
     plugins: EditorKit,
-    value,
+    value: initialContent,
   });
 
+  const debouncedSave = useCallback(
+    debounce(async () => {
+      if (!editor) return;
+      try {
+        const serializedContent = JSON.stringify(editor.children);
+        console.log(serializedContent)
+        const response = await fetch(`/api/notebooks/${notebookId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: initialTitle,
+            content: serializedContent,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to save notebook');
+        }
+      } catch (error) {
+        console.error('Error saving notebook:', error);
+      }
+    }, 3000),
+    [editor, notebookId, initialTitle]
+  );
+
   return (
-    <Plate editor={editor}>
+    <Plate
+      editor={editor}
+      onChange={() => {
+        debouncedSave();
+      }}
+    >
       <EditorContainer>
         <Editor variant="default" />
       </EditorContainer>
-
       <SettingsDialog />
     </Plate>
   );
 }
+
+
 
 const value = [
   {
