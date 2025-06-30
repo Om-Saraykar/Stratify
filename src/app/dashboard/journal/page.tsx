@@ -3,14 +3,15 @@
 import { useEffect, useState } from "react"
 import { NewNoteDialog } from "@/components/journal/new-note-dialog"
 import { NoteCard } from "@/components/journal/note-card"
-import { Input } from "@/registry/new-york/ui/input"
-import { Button } from "@/registry/default/ui/button"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { MdSmartToy } from "react-icons/md"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
-} from "@/registry/default/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu"
+import { SkeletonCard } from "@/components/journal/journal-skeleton" 
 
 interface ChecklistItem {
   id?: string
@@ -25,7 +26,7 @@ interface JournalEntry {
   date: string
   image?: string
   checklist?: ChecklistItem[]
-  stressScore?: number
+  stressScore?: number | null
 }
 
 interface StressSummary {
@@ -45,7 +46,6 @@ export default function Journal() {
       try {
         const res = await fetch("/api/journal-entry")
         const data = await res.json()
-        console.log("📒 Loaded entries:", data)
         setEntries(data)
       } catch (err) {
         console.error("❌ Failed to fetch journal entries:", err)
@@ -63,7 +63,6 @@ export default function Journal() {
       headers: { "Content-Type": "application/json" },
     })
     const newEntry = await res.json()
-    console.log("✅ Entry added:", newEntry)
     setEntries((prev) => [newEntry, ...prev])
   }
 
@@ -74,24 +73,17 @@ export default function Journal() {
       headers: { "Content-Type": "application/json" },
     })
     const updated = await res.json()
-    console.log("✏️ Entry edited:", updated)
     setEntries((prev) => prev.map((entry) => (entry.id === id ? updated : entry)))
   }
 
   const handleEntryDelete = async (id: string) => {
     await fetch(`/api/journal-entry/${id}`, { method: "DELETE" })
-    console.log("🗑️ Entry deleted:", id)
     setEntries((prev) => prev.filter((entry) => entry.id !== id))
   }
 
-  useEffect(() => {
-    console.log("📋 Entries updated:", entries)
-  }, [entries])
-  
   const handleStressCheck = async () => {
     try {
-      const unscoredEntries = entries.filter((entry) => entry.stressScore === null)
-      console.log(unscoredEntries);
+      const unscoredEntries = entries.filter((entry) => entry.stressScore == null)
 
       if (unscoredEntries.length === 0) {
         alert("All entries are already analyzed ✅")
@@ -99,7 +91,6 @@ export default function Journal() {
       }
 
       setAnalyzing(true)
-      console.log("🔍 Starting stress analysis...")
 
       const res = await fetch("/api/ai/stress-check", {
         method: "POST",
@@ -107,19 +98,12 @@ export default function Journal() {
         body: JSON.stringify({ entries: unscoredEntries }),
       })
 
-      if (!res.ok) {
-        const text = await res.text()
-        console.error("❌ Error from AI API:", text)
-        throw new Error("API returned an error")
-      }
+      if (!res.ok) throw new Error("AI API returned an error")
 
       const data = await res.json()
-      console.log("✅ AI Response:", data)
-
       const analyzedEntries = data.analyzedEntries || []
       const summary = data.summary || null
 
-      // 🧠 Save each stress score to DB
       await Promise.all(
         analyzedEntries.map(async ({ id, stressScore }: { id: string; stressScore: number }) => {
           try {
@@ -134,7 +118,6 @@ export default function Journal() {
         })
       )
 
-      // 🧠 Update frontend state
       setEntries((prev) =>
         prev.map((entry) => {
           const match = analyzedEntries.find((e) => e.id === entry.id)
@@ -150,9 +133,9 @@ export default function Journal() {
       setAnalyzing(false)
     }
   }
-  
+
   return (
-    <div>
+    <div className="w-6xl mx-auto h-full p-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
         <h1 className="text-2xl font-semibold">Your Journal</h1>
         <div className="flex items-center gap-4">
@@ -189,20 +172,19 @@ export default function Journal() {
         </div>
       </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          {entries.map((entry) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+          : entries.map((entry) => (
             <NoteCard
               key={entry.id}
               {...entry}
+              stressScore={entry.stressScore ?? undefined}
               onEdit={(updated) => handleEntryEdit(entry.id, updated)}
               onDelete={() => handleEntryDelete(entry.id)}
             />
           ))}
-        </div>
-      )}
+      </div>
     </div>
   )
 }
