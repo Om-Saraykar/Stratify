@@ -1,21 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
-import ShareNotebookDialog from "@/components/notes/share-notebook-dialog";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/loader";
+import { SkeletonCard } from "@/components/notes/your-notebooks-skeleton";
+import ShareNotebookDialog from "@/components/notes/share-notebook-dialog";
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Trash2, Share2 } from "lucide-react";
-import { SkeletonCard } from "@/components/notes/your-notebooks-skeleton";  
 
 type Notebook = {
   id: string;
@@ -30,11 +30,10 @@ export default function YourNotebooks() {
 
   const [notebooks, setNotebooks] = useState<Notebook[]>([]);
   const [newTitle, setNewTitle] = useState("");
-
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
-
   const [loading, setLoading] = useState(true);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null); // ⬅️ Track notebook being clicked
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -48,26 +47,21 @@ export default function YourNotebooks() {
     if (status !== "authenticated") return;
 
     const fetchNotebooks = async () => {
-      setLoading(true); // start loading
+      setLoading(true);
       const res = await fetch(`/api/notebooks`);
       const data = await res.json();
       setNotebooks(data);
-      setLoading(false); // done loading
+      setLoading(false);
     };
 
     fetchNotebooks();
-  }, [status]);  
+  }, [status]);
 
   const createNotebook = async () => {
     const res = await fetch("/api/notebooks", {
       method: "POST",
-      body: JSON.stringify({
-        title: newTitle || "Untitled",
-        content: [],
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
+      body: JSON.stringify({ title: newTitle || "Untitled", content: [] }),
+      headers: { "Content-Type": "application/json" },
     });
 
     const created = await res.json();
@@ -76,9 +70,7 @@ export default function YourNotebooks() {
   };
 
   const deleteNotebook = async (id: string) => {
-    await fetch(`/api/notebooks/${id}`, {
-      method: "DELETE",
-    });
+    await fetch(`/api/notebooks/${id}`, { method: "DELETE" });
     setNotebooks(notebooks.filter((n) => n.id !== id));
   };
 
@@ -106,12 +98,21 @@ export default function YourNotebooks() {
             <Card key={notebook.id} className="group relative p-4 w-[250px] h-[150px]">
               <CardContent className="p-0 h-full">
                 <div className="h-full flex flex-col justify-between items-start">
-                  <Link
-                    href={`/editor/${notebook.id}`}
-                    className="text-xl font-medium hover:underline"
+                  <button
+                    onClick={() => {
+                      setNavigatingTo(notebook.id);
+                      router.push(`/editor/${notebook.id}`);
+                    }}
+                    className="text-left text-xl font-medium hover:underline disabled:opacity-60"
+                    disabled={navigatingTo === notebook.id}
                   >
-                    {notebook.title}
-                  </Link>
+                    {navigatingTo === notebook.id ? (
+                      <Spinner size="small" className="text-muted-foreground" />
+                    ) : (
+                      notebook.title
+                    )}
+                  </button>
+
                   <p className="text-sm text-gray-500 mt-2">
                     Created: {new Date(notebook.createdAt).toLocaleDateString()}
                   </p>
@@ -150,6 +151,7 @@ export default function YourNotebooks() {
             </Card>
           ))}
       </div>
+
       <ShareNotebookDialog
         open={openDialog}
         onOpenChange={setOpenDialog}

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/loader";
 import { SkeletonCard } from "@/components/notes/shared-notebooks-skeleton";
 
 type SharedNotebook = {
@@ -16,22 +17,29 @@ type SharedNotebook = {
 
 export default function SharedNotebooks() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [sharedNotebooks, setSharedNotebooks] = useState<SharedNotebook[]>([]);
-  const [loaded, setLoaded] = useState(false); // to avoid flashing "no shared notebooks" before fetch completes
   const [loading, setLoading] = useState(true);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
 
   useEffect(() => {
     if (status !== "authenticated") return;
 
     const fetchShared = async () => {
-      const res = await fetch("/api/shared-notebooks");
-      const data = await res.json();
-      setSharedNotebooks(data);
-      setLoading(false);
+      try {
+        const res = await fetch("/api/shared-notebooks");
+        const data = await res.json();
+        setSharedNotebooks(data);
+      } catch (error) {
+        console.error("Failed to fetch shared notebooks:", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchShared();
-  }, [status]);  
+  }, [status]);
 
   if (status === "loading") return null;
 
@@ -53,12 +61,21 @@ export default function SharedNotebooks() {
             <Card key={notebook.id} className="p-4 w-[250px] h-[150px]">
               <CardContent className="p-0 h-full">
                 <div className="h-full flex flex-col justify-between items-start">
-                  <Link
-                    href={`/editor/${notebook.id}`}
-                    className="text-xl font-medium hover:underline"
+                  <button
+                    onClick={() => {
+                      setNavigatingTo(notebook.id);
+                      router.push(`/editor/${notebook.id}`);
+                    }}
+                    disabled={navigatingTo === notebook.id}
+                    className="text-left text-xl font-medium hover:underline disabled:opacity-60"
                   >
-                    {notebook.title}
-                  </Link>
+                    {navigatingTo === notebook.id ? (
+                      <Spinner size="small" className="text-muted-foreground" />
+                    ) : (
+                      notebook.title
+                    )}
+                  </button>
+
                   <div className="text-sm text-gray-500 space-y-1 mt-2">
                     <p>Shared by: {notebook.ownerEmail}</p>
                     <p>Access: {notebook.access}</p>

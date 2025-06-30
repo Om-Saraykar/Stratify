@@ -2,34 +2,42 @@
 
 import * as React from 'react';
 import { Plate, usePlateEditor } from 'platejs/react';
+import { debounce } from 'lodash';
+import { useCallback } from 'react';
 
 import { EditorKit } from '@/components/editor/editor-kit';
 import { SettingsDialog } from '@/components/editor/settings-dialog';
 import { Editor, EditorContainer } from '@/components/ui/editor';
-import { useCallback } from 'react';
-import { debounce } from 'lodash';
 
 type PlateEditorProps = {
   notebookId: string;
   initialTitle: string;
   initialContent: any;
+  isReadOnly: boolean;
 };
 
-export function PlateEditor({ notebookId, initialTitle, initialContent }: PlateEditorProps) {
+export function PlateEditor({
+  notebookId,
+  initialTitle,
+  initialContent,
+  isReadOnly,
+}: PlateEditorProps) {
   const editor = usePlateEditor({
     plugins: EditorKit,
     value: initialContent,
+    readOnly: isReadOnly,
   });
 
   const debouncedSave = useCallback(
     debounce(async () => {
-      if (!editor) return;
+      if (!editor || isReadOnly) return;
+
       try {
         const serializedContent = JSON.stringify(editor.children);
-        console.log(serializedContent)
+
         const response = await fetch(`/api/notebooks/${notebookId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             title: initialTitle,
             content: serializedContent,
@@ -37,20 +45,22 @@ export function PlateEditor({ notebookId, initialTitle, initialContent }: PlateE
         });
 
         if (!response.ok) {
-          console.error('Failed to save notebook');
+          console.error("❌ Failed to save notebook");
         }
       } catch (error) {
-        console.error('Error saving notebook:', error);
+        console.error("❌ Error saving notebook:", error);
       }
     }, 3000),
-    [editor, notebookId, initialTitle]
+    [editor, notebookId, initialTitle, isReadOnly]
   );
 
   return (
     <Plate
       editor={editor}
       onChange={() => {
-        debouncedSave();
+        if (!isReadOnly) {
+          debouncedSave();
+        }
       }}
     >
       <EditorContainer>
@@ -60,7 +70,6 @@ export function PlateEditor({ notebookId, initialTitle, initialContent }: PlateE
     </Plate>
   );
 }
-
 
 
 // const value = [
