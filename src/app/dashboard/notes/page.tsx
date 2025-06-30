@@ -7,7 +7,7 @@ import { SessionProvider } from "next-auth/react";
 export default function Page() {
   return (
     <SessionProvider>
-      <div className="p-6 max-w-4xl mx-auto">
+      <div className="w-4xl mx-auto h-full p-6">
         <YourNotebooks />
         <SharedNotebooks />
       </div>

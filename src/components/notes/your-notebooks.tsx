@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreVertical, Trash2, Share2 } from "lucide-react";
+import { SkeletonCard } from "@/components/notes/your-notebooks-skeleton";  
 
 type Notebook = {
   id: string;
@@ -33,6 +34,8 @@ export default function YourNotebooks() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
 
+  const [loading, setLoading] = useState(true);
+
   // Redirect if not authenticated
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -45,13 +48,15 @@ export default function YourNotebooks() {
     if (status !== "authenticated") return;
 
     const fetchNotebooks = async () => {
+      setLoading(true); // start loading
       const res = await fetch(`/api/notebooks`);
       const data = await res.json();
       setNotebooks(data);
+      setLoading(false); // done loading
     };
 
     fetchNotebooks();
-  }, [status]);
+  }, [status]);  
 
   const createNotebook = async () => {
     const res = await fetch("/api/notebooks", {
@@ -94,52 +99,56 @@ export default function YourNotebooks() {
         <Button onClick={createNotebook}>Create</Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {notebooks.map((notebook) => (
-          <Card key={notebook.id} className="group relative p-4">
-            <CardContent className="p-0">
-              <Link
-                href={`/editor/${notebook.id}`}
-                className="text-xl font-medium hover:underline"
-              >
-                {notebook.title}
-              </Link>
-              <p className="text-sm text-gray-500 mt-2">
-                Created: {new Date(notebook.createdAt).toLocaleDateString()}
-              </p>
+      <div className="flex flex-wrap gap-4">
+        {loading
+          ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+          : notebooks.map((notebook) => (
+            <Card key={notebook.id} className="group relative p-4 w-[250px] h-[150px]">
+              <CardContent className="p-0 h-full">
+                <div className="h-full flex flex-col justify-between items-start">
+                  <Link
+                    href={`/editor/${notebook.id}`}
+                    className="text-xl font-medium hover:underline"
+                  >
+                    {notebook.title}
+                  </Link>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Created: {new Date(notebook.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="absolute top-2 right-2 opacity-0 group-hover:opacity-100"
-                  >
-                    <MoreVertical className="w-5 h-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setSelectedNotebookId(notebook.id);
-                      setOpenDialog(true);
-                    }}
-                  >
-                    <Share2 className="w-4 h-4 mr-2" />
-                    Share
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => deleteNotebook(notebook.id)}
-                    className="text-red-500 focus:text-red-500"
-                  >
-                    <Trash2 className="w-4 h-4 mr-2" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </CardContent>
-          </Card>
-        ))}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100"
+                    >
+                      <MoreVertical className="w-5 h-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedNotebookId(notebook.id);
+                        setOpenDialog(true);
+                      }}
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => deleteNotebook(notebook.id)}
+                      className="text-red-500 focus:text-red-500"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </CardContent>
+            </Card>
+          ))}
       </div>
       <ShareNotebookDialog
         open={openDialog}
