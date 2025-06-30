@@ -30,6 +30,11 @@ enum TaskLabel {
   OTHER
 }
 
+enum AccessLevel {
+  VIEW
+  EDIT
+}
+
 // Models
 model User {
   id            String    @id @default(cuid())
@@ -42,6 +47,7 @@ model User {
   sessions      Session[]
   Task Task[]
   Notebook Notebook[]
+  SharedNotebook SharedNotebook[]
 }
 
 model Account {
@@ -122,4 +128,18 @@ model Notebook {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  SharedNotebook SharedNotebook[]
+}
+
+model SharedNotebook {
+  id         String   @id @default(cuid())
+  notebookId String
+  userId     String
+  access     AccessLevel @default(EDIT)
+  createdAt  DateTime @default(now())
+
+  notebook   Notebook @relation(fields: [notebookId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([notebookId, userId])
 }

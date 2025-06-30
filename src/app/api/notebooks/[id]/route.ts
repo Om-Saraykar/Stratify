@@ -14,7 +14,19 @@ export async function GET(_: Request, context: { params: { id: string } }) {
 
   try {
     const notebook = await prisma.notebook.findFirst({
-      where: { id, userId: session.user.id },
+      where: {
+        id,
+        OR: [
+          { userId: session.user.id },
+          {
+            SharedNotebook: {
+              some: {
+                userId: session.user.id,
+              },
+            },
+          },
+        ],
+      },
     });
 
     if (!notebook) {
@@ -38,16 +50,29 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
   const { title, content } = await req.json();
 
   try {
-    const notebook = await prisma.notebook.findFirst({
-      where: { id, userId: session.user.id },
+    const hasEditAccess = await prisma.notebook.findFirst({
+      where: {
+        id,
+        OR: [
+          { userId: session.user.id },
+          {
+            SharedNotebook: {
+              some: {
+                userId: session.user.id,
+                access: "EDIT",
+              },
+            },
+          },
+        ],
+      },
     });
 
-    if (!notebook) {
-      return NextResponse.json({ error: "Notebook not found" }, { status: 404 });
+    if (!hasEditAccess) {
+      return NextResponse.json({ error: "Access denied" }, { status: 403 });
     }
 
     const updated = await prisma.notebook.update({
-      where: { id, userId: session.user.id },
+      where: { id },
       data: { title, content },
     });
 
@@ -56,6 +81,7 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
     return NextResponse.json({ error: "Error updating notebook" }, { status: 500 });
   }
 }
+
 
 // DELETE: Delete a notebook owned by the logged-in user
 export async function DELETE(_: Request, context: { params: { id: string } }) {

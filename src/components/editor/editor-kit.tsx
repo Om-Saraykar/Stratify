@@ -39,7 +39,7 @@ import { TocKit } from '@/components/editor/plugins/toc-kit';
 import { ToggleKit } from '@/components/editor/plugins/toggle-kit';
 
 export const EditorKit = [
-  ...CopilotKit,
+  // ...CopilotKit,
   ...AIKit,
 
   // Elements

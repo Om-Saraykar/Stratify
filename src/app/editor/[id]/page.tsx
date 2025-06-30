@@ -20,14 +20,13 @@ export default async function EditorPage({ params }: Props) {
   }
 
   const { id } = await params;
-  console.log("id: ", id);
+  console.log("notebook id: ", id);
   console.log("session: ", session);
   console.log("session.user.id: ", session?.user?.id);
 
   const notebook = await prisma.notebook.findFirst({
     where: {
       id,
-      userId: session.user.id,
     },
   });
   console.log("notebook: ", notebook)
