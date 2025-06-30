@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoadingButton } from "@/components/ui/loading-button";
 
 export function SignupForm({
   className,
@@ -33,22 +34,12 @@ export function SignupForm({
     setError(null);
     setSuccess(null);
 
-    // --- REMOVE THIS BLOCK if 'name' is optional ---
-    // if (!name.trim()) {
-    //   setError("Name is required.");
-    //   setLoading(false);
-    //   return;
-    // }
-    // --- End REMOVE block ---
-
     try {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // 'name' will now be an empty string if the user doesn't type anything,
-        // which is fine since your Prisma schema allows it (String?).
         body: JSON.stringify({ name, email, password }),
       });
 
@@ -58,14 +49,14 @@ export function SignupForm({
         setSuccess(data.message || "Account created successfully!");
         setTimeout(() => {
           router.push("/login?message=signup_success");
-        }, 1500);
+        }, 1000);
       } else {
         setError(data.message || "Failed to create account.");
+        setLoading(false); // Only stop loader if there's an error
       }
     } catch (err) {
       console.error("Signup fetch error:", err);
       setError("An unexpected error occurred. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -102,11 +93,9 @@ export function SignupForm({
                   <Input
                     id="name"
                     type="text"
-                    placeholder="John Doe (Optional)" // <--- Updated placeholder
+                    placeholder="John Doe (Optional)"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                  // REMOVE 'required' attribute if name is truly optional
-                  // required
                   />
                 </div>
                 <div className="grid gap-3">
@@ -130,9 +119,9 @@ export function SignupForm({
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full cursor-pointer" disabled={loading}>
+                <LoadingButton loading={loading}>
                   {loading ? "Creating account..." : "Create account"}
-                </Button>
+                </LoadingButton>
               </div>
               <div className="text-center text-sm">
                 Already have an account?{" "}

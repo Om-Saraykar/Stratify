@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { signIn } from 'next-auth/react'; // Import signIn
+import { signIn } from 'next-auth/react';
+import { LoadingButton } from "@/components/ui/loading-button";
 
 export function LoginForm({
   className,
@@ -30,20 +31,20 @@ export function LoginForm({
     setError(null);
     setIsLoading(true);
 
-    const result = await signIn('credentials', { // Use 'credentials' provider
-      redirect: false, // Don't redirect automatically
+    const result = await signIn('credentials', {
+      redirect: false,
       email,
       password,
     });
 
     if (result?.error) {
-      setError(result.error); // Display error from NextAuth
+      setError(result.error);
       console.error('Login error:', result.error);
+      setIsLoading(false);
     } else if (result?.ok) {
-      console.log('Login successful!');
-      router.push('/dashboard/notes'); // Redirect to dashboard on success
+      // wait for router push to complete before turning off loading
+      router.push('/dashboard/notes');
     }
-    setIsLoading(false);
   };
 
   return (
@@ -102,9 +103,9 @@ export function LoginForm({
                   />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full cursor-pointer" disabled={isLoading}>
-                  {isLoading ? 'Logging in...' : 'Login'}
-                </Button>
+                <LoadingButton loading={isLoading}>
+                  {isLoading ? "Logging in..." : "Login"}
+                </LoadingButton>
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
