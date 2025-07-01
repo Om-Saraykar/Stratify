@@ -1,22 +1,20 @@
 // hooks/useTasks.ts
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 
 export function useTasks() {
   const [tasks, setTasks] = useState([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    async function fetchTasks() {
-      const res = await fetch("/api/tasks")
-      const data = await res.json()
-      setTasks(data)
-      setLoading(false)
-    }
-
-    fetchTasks()
+  const fetchTasks = useCallback(async () => {
+    const res = await fetch("/api/tasks")
+    const data = await res.json()
+    setTasks(data)
   }, [])
 
-  return { tasks, loading }
+  useEffect(() => {
+    fetchTasks()
+  }, [fetchTasks])
+
+  return { tasks, refetchTasks: fetchTasks }
 }

@@ -43,25 +43,36 @@ export async function POST(req: Request) {
   }
 
   const body = await req.json()
-
   const { title, description, status, label, priority, startAt, endAt } = body
 
-  if (!title || !status || !label || !priority) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+  // Validate required fields
+  if (!title || !description || !status || !label || !priority) {
+    return NextResponse.json(
+      { error: 'Missing required fields' },
+      { status: 400 }
+    )
   }
 
-  const task = await prisma.task.create({
-    data: {
-      title,
-      description,
-      status,
-      label,
-      priority,
-      startAt: startAt ? new Date(startAt) : null,
-      endAt: endAt ? new Date(endAt) : null,
-      userId: user.id,
-    },
-  })
+  try {
+    const task = await prisma.task.create({
+      data: {
+        title,
+        description,
+        status,
+        label, 
+        priority,
+        startAt: startAt ? new Date(startAt) : null,
+        endAt: endAt ? new Date(endAt) : null,
+        userId: user.id,
+      },
+    })
 
-  return NextResponse.json(task)
+    return NextResponse.json(task)
+  } catch (error) {
+    console.error("Error creating task:", error)
+    return NextResponse.json(
+      { error: 'Failed to create task' },
+      { status: 500 }
+    )
+  }
 }

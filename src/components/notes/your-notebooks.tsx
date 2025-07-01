@@ -33,7 +33,7 @@ export default function YourNotebooks() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedNotebookId, setSelectedNotebookId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [navigatingTo, setNavigatingTo] = useState<string | null>(null); // ⬅️ Track notebook being clicked
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null); 
 
   // Redirect if not authenticated
   useEffect(() => {

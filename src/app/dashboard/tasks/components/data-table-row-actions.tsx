@@ -1,25 +1,21 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Row } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
+import { toast } from "sonner"
 
-import { Button } from "@/registry/new-york/ui/button"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@/registry/new-york/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu"
 
-import { labels } from "../data/data"
 import { taskSchema } from "../data/schema"
+import { NewTaskDialog } from "./new-task-dialog"
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -30,40 +26,59 @@ export function DataTableRowActions<TData>({
 }: DataTableRowActionsProps<TData>) {
   const task = taskSchema.parse(row.original)
 
+  const [editOpen, setEditOpen] = useState(false)
+
+  const router = useRouter()
+
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/tasks/${task.id}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) throw new Error()
+
+      toast.success("Task deleted")
+      router.push("/dashboard/tasks")
+      router.refresh()
+    } catch {
+      toast.error("Failed to delete task")
+    }
+  }
+
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <MoreHorizontal />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger>Labels</DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup value={task.label}>
-              {labels.map((label) => (
-                <DropdownMenuRadioItem key={label.value} value={label.value}>
-                  {label.label}
-                </DropdownMenuRadioItem>
-              ))}
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          >
+            <MoreHorizontal className="h-4 w-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-32">
+          <DropdownMenuItem onClick={() => setEditOpen(true)}>
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleDelete}>
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <NewTaskDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        taskId={task.id}
+        initialData={task}
+        onTaskCreated={() => {
+          router.push("/dashboard/tasks")
+          router.refresh()
+        }}
+      />
+    </>
   )
 }

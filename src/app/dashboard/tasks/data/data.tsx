@@ -10,62 +10,56 @@ import {
 } from "lucide-react"
 
 export const labels = [
-  {
-    value: "bug",
-    label: "Bug",
-  },
-  {
-    value: "feature",
-    label: "Feature",
-  },
-  {
-    value: "documentation",
-    label: "Documentation",
-  },
+  { value: "PERSONAL", label: "Personal" },
+  { value: "WORK", label: "Work" },
+  { value: "HEALTH", label: "Health" },
+  { value: "STUDY", label: "Study" },
+  { value: "OTHER", label: "Other" },
 ]
 
 export const statuses = [
   {
-    value: "backlog",
+    value: "BACKLOG",
     label: "Backlog",
     icon: HelpCircle,
   },
   {
-    value: "todo",
+    value: "TODO",
     label: "Todo",
     icon: Circle,
   },
   {
-    value: "in progress",
+    value: "IN_PROGRESS",
     label: "In Progress",
     icon: Timer,
   },
   {
-    value: "done",
+    value: "DONE",
     label: "Done",
     icon: CheckCircle,
   },
   {
-    value: "canceled",
-    label: "Canceled",
+    value: "CANCELLED",
+    label: "Cancelled",
     icon: CircleOff,
   },
 ]
 
+// 👇 Matches TaskPriority enum
 export const priorities = [
   {
+    value: "LOW",
     label: "Low",
-    value: "low",
     icon: ArrowDown,
   },
   {
+    value: "MEDIUM",
     label: "Medium",
-    value: "medium",
     icon: ArrowRight,
   },
   {
+    value: "HIGH",
     label: "High",
-    value: "high",
     icon: ArrowUp,
   },
 ]

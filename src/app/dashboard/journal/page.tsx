@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu"
-import { SkeletonCard } from "@/components/journal/journal-skeleton" 
+import { SkeletonCard } from "@/components/journal/journal-skeleton"
 
 interface ChecklistItem {
   id?: string
@@ -53,32 +53,51 @@ export default function Journal() {
         setLoading(false)
       }
     }
+
     fetchEntries()
   }, [])
 
-  const handleEntryAdd = async (entry: Omit<JournalEntry, "id">) => {
-    const res = await fetch("/api/journal-entry", {
-      method: "POST",
-      body: JSON.stringify(entry),
-      headers: { "Content-Type": "application/json" },
-    })
-    const newEntry = await res.json()
-    setEntries((prev) => [newEntry, ...prev])
+  const handleEntryAdd = async (entry: Omit<JournalEntry, "id" | "stressScore">) => {
+    try {
+      const res = await fetch("/api/journal-entry", {
+        method: "POST",
+        body: JSON.stringify(entry),
+        headers: { "Content-Type": "application/json" },
+      })
+
+      if (!res.ok) throw new Error("Failed to create journal entry")
+
+      const newEntry = await res.json()
+      setEntries((prev) => [newEntry, ...prev])
+    } catch (err) {
+      console.error("❌ Failed to create entry", err)
+    }
   }
 
   const handleEntryEdit = async (id: string, updatedEntry: Partial<JournalEntry>) => {
-    const res = await fetch(`/api/journal-entry/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedEntry),
-      headers: { "Content-Type": "application/json" },
-    })
-    const updated = await res.json()
-    setEntries((prev) => prev.map((entry) => (entry.id === id ? updated : entry)))
+    try {
+      const res = await fetch(`/api/journal-entry/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(updatedEntry),
+        headers: { "Content-Type": "application/json" },
+      })
+
+      if (!res.ok) throw new Error("Failed to update entry")
+
+      const updated = await res.json()
+      setEntries((prev) => prev.map((entry) => (entry.id === id ? updated : entry)))
+    } catch (err) {
+      console.error(`❌ Failed to update entry ${id}`, err)
+    }
   }
 
   const handleEntryDelete = async (id: string) => {
-    await fetch(`/api/journal-entry/${id}`, { method: "DELETE" })
-    setEntries((prev) => prev.filter((entry) => entry.id !== id))
+    try {
+      await fetch(`/api/journal-entry/${id}`, { method: "DELETE" })
+      setEntries((prev) => prev.filter((entry) => entry.id !== id))
+    } catch (err) {
+      console.error(`❌ Failed to delete entry ${id}`, err)
+    }
   }
 
   const handleStressCheck = async () => {
@@ -172,10 +191,19 @@ export default function Journal() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-        {loading
-          ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-          : entries.map((entry) => (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      ) : entries.length === 0 ? (
+        <div className="text-start text-muted-foreground mt-10 text-sm">
+          You have no journal entries yet. Click <strong>Add Entry</strong> to start journaling 
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          {entries.map((entry) => (
             <NoteCard
               key={entry.id}
               {...entry}
@@ -184,7 +212,9 @@ export default function Journal() {
               onDelete={() => handleEntryDelete(entry.id)}
             />
           ))}
-      </div>
+        </div>
+      )}
+
     </div>
   )
 }

@@ -48,6 +48,7 @@ model User {
   Task Task[]
   Notebook Notebook[]
   SharedNotebook SharedNotebook[]
+  journalEntries JournalEntry[]
 }
 
 model Account {
@@ -95,6 +96,8 @@ model JournalEntry {
   checklist   ChecklistItem[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ChecklistItem {
@@ -104,7 +107,7 @@ model ChecklistItem {
   entryId String
   entry   JournalEntry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
 }
-
+  
 model Task {
   id          String       @id @default(cuid())
   title       String
