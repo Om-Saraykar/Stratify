@@ -1,27 +1,19 @@
-// app/api/tasks/[taskId]/route.ts
-
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../../auth/[...nextauth]/route'
-
-type Context = {
-  params: {
-    taskId: string
-  }
-}
+import { authOptions } from '@/lib/authOptions'
 
 // GET /api/tasks/[taskId]
 export async function GET(
   req: Request,
-  { params }: Context
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const session = await getServerSession(authOptions)
-  const { taskId } = await params;
-
   if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const { taskId } = await params
 
   try {
     const task = await prisma.task.findUnique({
@@ -41,27 +33,26 @@ export async function GET(
 // PUT /api/tasks/[taskId]
 export async function PUT(
   req: Request,
-  { params }: Context
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const session = await getServerSession(authOptions)
-
   if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  try {
-    const { taskId } = await params;
-    const body = await req.json()
-    const {
-      title,
-      description,
-      status,
-      label,
-      priority,
-      startAt,
-      endAt,
-    } = body
+  const { taskId } = await params
+  const body = await req.json()
+  const {
+    title,
+    description,
+    status,
+    label,
+    priority,
+    startAt,
+    endAt,
+  } = body
 
+  try {
     const updatedTask = await prisma.task.update({
       where: { id: taskId },
       data: {
@@ -84,14 +75,14 @@ export async function PUT(
 // DELETE /api/tasks/[taskId]
 export async function DELETE(
   req: Request,
-  { params }: Context
+  { params }: { params: Promise<{ taskId: string }> }
 ) {
   const session = await getServerSession(authOptions)
-  const { taskId } = await params;
-
   if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
+
+  const { taskId } = await params
 
   try {
     await prisma.task.delete({

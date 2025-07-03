@@ -12,12 +12,13 @@ import { ArrowDown, ThumbsDown, ThumbsUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { useAutoScroll } from "./../hooks/use-auto-scroll"
-import { Button } from "@/registry/default/ui/button"
+
 import { type Message } from "./chat-message"
 import { CopyButton } from "./copy-button"
 import { MessageInput } from "./message-input"
 import { MessageList } from "./message-list"
 import { PromptSuggestions } from "./prompt-suggestions"
+import { Button } from "./button"
 
 interface ChatPropsBase {
   handleSubmit: (

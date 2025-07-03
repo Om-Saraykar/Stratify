@@ -2,7 +2,7 @@ import { Toaster } from 'sonner';
 
 import { PlateEditor } from '@/components/editor/plate-editor';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import { redirect } from 'next/navigation';
 
 export default async function NotesPage() {
@@ -14,7 +14,7 @@ export default async function NotesPage() {
 
   return (
     <div className="h-screen w-full">
-      <PlateEditor notebookId={''} initialTitle={''} initialContent={[]} />
+      <PlateEditor isReadOnly={false} notebookId={''} initialTitle={''} initialContent={[]} />
       <Toaster />
     </div>
   );

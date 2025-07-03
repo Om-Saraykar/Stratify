@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/authOptions";
 import prisma from "@/lib/prisma";
 
 // GET: Retrieve a specific notebook for the logged-in user
-export async function GET(_: Request, context: { params: { id: string } }) {
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const { id } = await params;
 
   try {
     const notebook = await prisma.notebook.findFirst({
@@ -40,13 +43,16 @@ export async function GET(_: Request, context: { params: { id: string } }) {
 }
 
 // PUT: Update a notebook owned by the logged-in user
-export async function PUT(req: Request, context: { params: { id: string } }) {
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const { id } = await params;
   const { title, content } = await req.json();
 
   try {
@@ -82,15 +88,17 @@ export async function PUT(req: Request, context: { params: { id: string } }) {
   }
 }
 
-
 // DELETE: Delete a notebook owned by the logged-in user
-export async function DELETE(_: Request, context: { params: { id: string } }) {
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { id } = await context.params;
+  const { id } = await params;
 
   try {
     const notebook = await prisma.notebook.findFirst({
